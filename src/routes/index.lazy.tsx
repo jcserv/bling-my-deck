@@ -17,7 +17,7 @@ function Index() {
             <AlertTitle>Info</AlertTitle>
             <AlertDescription>
               Enter the cards you want to bling out, and we&apos;ll show you <br />
-              all of the printings available for each card, as well as <br />
+              all of the most expensive printings available for each card, as well as <br />
               the total cost.
             </AlertDescription>
           </Alert>

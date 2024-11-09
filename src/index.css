@@ -87,10 +87,6 @@ body {
   height: 100vh;
 }
 
-section {
-  height: 100vh;
-}
-
 .blue-gradient {
   background: rgb(2,0,36);
   background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,95,121,1) 50%, rgba(0,212,255,1) 100%);

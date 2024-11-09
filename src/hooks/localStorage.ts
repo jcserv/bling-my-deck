@@ -17,7 +17,6 @@ function getStorageValue(key: string, initialValue: any) {
 
   const entry = JSON.parse(savedValue) as StorageValue;
   if (isEntryExpired(entry)) {
-    console.log("Removing expired entry from localStorage");
     localStorage.removeItem(key);
     return initialValue;
   }

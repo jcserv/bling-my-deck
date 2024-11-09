@@ -1,3 +1,5 @@
+export const ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
+
 export type Card = {
   name: string;
   quantity: number;
@@ -31,4 +33,52 @@ export function parseDeckList(input: string): Card[] {
   }
 
   return Object.values(cardMap);
+}
+
+export enum Treatment {
+  Normal = 'Normal',
+  Foil = 'Foil',
+  Etched = 'Etched',
+}
+
+export const AllTreatments: string[] = Object.values(Treatment);
+
+export type Submission = {
+  decklist: Card[];
+  treatments: Treatment[];
+  localCurrency: string;
+}
+export interface CardOption {
+  id: string;
+  cardName: string;
+  cardType: string;
+  setName: string;
+  setCode: string;
+  collectorNumber: string;
+  image?: string;
+  treatments: Array<{
+    name: Treatment;
+    price: number | null;
+    available: boolean;
+  }>;
+  quantity: number;
+  selected: boolean;
+  selectedTreatment?: Treatment;
+}
+
+export interface DeckPricingResult {
+  bling: {
+    [name: string]: CardOption;
+  };
+  cards: {
+    [name: string]: CardOption[];
+  };
+  totalPrice: number;
+  missingPrices: boolean;
+  stats: {
+    totalCards: number;
+    uniqueCards: number;
+    selectedCards: number;
+    unavailableTreatments: number;
+  };
 }

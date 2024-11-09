@@ -21,11 +21,14 @@ import {
 } from "@/components/ui/select";
 
 import currency from "@/assets/currency.json";
-import { AllTreatments, Treatment } from "@/types/treatment";
 import { Checkbox } from "./ui/checkbox";
 import { useLocalStorage } from "@/hooks/localStorage";
-import { ONE_DAY_IN_MILLISECONDS } from "@/types/constants";
-import { parseDeckList } from "@/types/card";
+import {
+  ONE_DAY_IN_MILLISECONDS,
+  parseDeckList,
+  Treatment,
+  AllTreatments,
+} from "@/types";
 import { useNavigate } from "@tanstack/react-router";
 
 const decklistRegex =
@@ -35,15 +38,15 @@ const formSchema = z.object({
   decklist: z
     .string()
     .min(1, "Please enter one or more cards")
-    .regex(RegExp(decklistRegex), 'Invalid decklist format')
-  .refine(
-    (decklist) => {
-      return decklist.split(/\r?\n/).length <= 100
-    },
-    {
-      message: "Decklist cannot contain more than 100 cards"
-    }
-  ),
+    .regex(RegExp(decklistRegex), "Invalid decklist format")
+    .refine(
+      (decklist) => {
+        return decklist.split(/\r?\n/).length <= 100;
+      },
+      {
+        message: "Decklist cannot contain more than 100 cards",
+      }
+    ),
   treatments: z.array(z.nativeEnum(Treatment), {
     message: "Please select one or more treatments",
   }),
