@@ -10,20 +10,25 @@ const cardlineRegex =
 
 export function parseDeckList(input: string): Card[] {
   const lines = input.split("\n");
-  const cards: Card[] = [];
+  const cardMap: { [name: string]: Card } = {};
 
   for (const line of lines) {
     const match = line.trim().match(cardlineRegex);
     if (match) {
       const [, quantity, name, set, collectorNumber, alternateSet] = match;
-      cards.push({
-        name,
-        quantity: parseInt(quantity, 10),
-        set: set || alternateSet || undefined,
-        collectorNumber: collectorNumber || undefined,
-      });
+      const cardKey = `${name}-${set || alternateSet || ''}-${collectorNumber || ''}`;
+      if (cardMap[cardKey]) {
+        cardMap[cardKey].quantity += parseInt(quantity, 10);
+      } else {
+        cardMap[cardKey] = {
+          name,
+          quantity: parseInt(quantity, 10),
+          set: set || alternateSet || undefined,
+          collectorNumber: collectorNumber || undefined,
+        };
+      }
     }
   }
 
-  return cards;
+  return Object.values(cardMap);
 }

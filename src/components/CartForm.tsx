@@ -68,7 +68,7 @@ export const CartForm: React.FC = () => {
     defaultValues: {
       decklist: "",
       treatments: [],
-      localCurrency: "",
+      localCurrency: "USD",
     },
   });
 
@@ -159,7 +159,7 @@ export const CartForm: React.FC = () => {
               render={() => (
                 <FormItem>
                   <div>
-                    <FormLabel className="text-base">Treatments</FormLabel>
+                    <FormLabel className="text-base">Filters</FormLabel>
                   </div>
                   {AllTreatments.map((treatment) => (
                     <FormField
