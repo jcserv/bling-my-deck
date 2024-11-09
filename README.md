@@ -11,6 +11,9 @@ for their pet decks.
 - allow users to page through printings
 - add loading screen
 - refactor deck viewer into subcomponents
+- dark mode onhover card styling
+- add *f* to moxfield export
+- cleanup janky card type parsing
 
 ## credits
 
