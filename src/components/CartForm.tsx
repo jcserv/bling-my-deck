@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/select";
 
 import currency from "@/assets/currency.json";
+import { AllTreatments, Treatment } from "@/types/treatment";
+import { Checkbox } from "./ui/checkbox";
 
 const decklistRegex = /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
 
@@ -29,6 +31,9 @@ const formSchema = z.object({
     RegExp(decklistRegex),
     'Invalid decklist format'
   ),
+  treatments: z.array(z.nativeEnum(Treatment), {
+    message: "Please select one or more treatments",
+  }),
   localCurrency: z.enum([currency[0].value, ...currency.map((currency) => currency.value)], {
     message: "Please select your local currency",
   }),
@@ -39,6 +44,7 @@ export const CartForm: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       decklist: "",
+      treatments: [],
       localCurrency: "",
     },
   });
@@ -97,6 +103,55 @@ export const CartForm: React.FC = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="treatments"
+              render={() => (
+                <FormItem>
+                  <div>
+                    <FormLabel className="text-base">Retailers</FormLabel>
+                  </div>
+                  {AllTreatments.map((treatment) => (
+                    <FormField
+                      key={treatment}
+                      control={form.control}
+                      name="treatments"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={treatment}
+                            className="flex flex-row items-start space-x-2"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(treatment as Treatment)}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([
+                                        ...field.value,
+                                        treatment,
+                                      ])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== treatment
+                                        )
+                                      );
+                                }}
+                                className="mt-2"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal leading-none">
+                              {treatment}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
                   <FormMessage />
                 </FormItem>
               )}
