@@ -43,9 +43,6 @@ export class BlingService {
     submissionCard: Card,
     allowedTreatments: Treatment[]
   ): CardOption[] {
-    console.log(submissionCard.name);
-    if (submissionCard.name.startsWith("Invasion of Ikoria"))
-      console.log(printings);
     return printings
       .filter(
         (printing) =>

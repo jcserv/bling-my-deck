@@ -37,7 +37,14 @@ function Overview() {
       setDeckResult(result);
     };
 
-    fetchData().then(() => setTimeout(() => setLoading(false), 2500));
+    fetchData()
+      .then(() => setTimeout(() => setLoading(false), 2500))
+      .catch((err) => {
+        console.log(err);
+        navigate({
+          to: "/",
+        });
+      });
   }, [submission]);
 
   if (!submission) {
@@ -56,7 +63,8 @@ function Overview() {
                 loadingMessages[
                   Math.floor(Math.random() * loadingMessages.length)
                 ]
-              }...
+              }
+              ...
             </h1>
             <Loading />
           </div>
