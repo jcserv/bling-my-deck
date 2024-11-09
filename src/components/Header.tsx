@@ -13,6 +13,7 @@ export const Header: React.FC = () => {
         <Button
           variant="ghost"
           className="p-2"
+          aria-label="Open Github Repo"
           onClick={() => {
             window.open(
               "https://github.com/jcserv/bling-my-deck",

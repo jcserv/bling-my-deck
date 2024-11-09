@@ -60,7 +60,7 @@ const DeckViewer = ({
           <CardDisplay selectedCard={selectedCard} />
           <Card className="p-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Price:</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">Price:</span>
               <span className="font-semibold">
                 $
                 {selectedCard?.treatments
@@ -72,7 +72,7 @@ const DeckViewer = ({
           </Card>
           <Card className="p-4 space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Total Price</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">Total Price:</span>
               <span className="font-semibold">
                 ${deckResult.totalPrice.toFixed(2)} USD
               </span>

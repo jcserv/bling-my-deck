@@ -12,7 +12,7 @@ function Index() {
     <section className="p-2 text-center">
       <div className="h-[80vh] w-screen flex flex-col items-center">
         <div className="flex flex-row">
-        <Alert className="text-start bg-blue-400 dark:bg-blue-400 my-8">
+        <Alert className="text-start bg-blue-400 dark:bg-blue-600 my-8">
             <Info className="h-4 w-4" />
             <AlertTitle>Info</AlertTitle>
             <AlertDescription>

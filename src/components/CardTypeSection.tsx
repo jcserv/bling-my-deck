@@ -106,9 +106,9 @@ const CardItem = ({
     className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer text-sm"
     onMouseEnter={() => setSelectedCard(selectedPrinting)}
   >
-    <span className="w-4 text-right text-gray-600">{quantity}</span>
+    <span className="w-4 text-right text-gray-500 dark:text-gray-400">{quantity}</span>
     <span className="flex-1 truncate">{cardName}</span>
-    <span className="text-xs text-gray-500">
+    <span className="text-xs text-gray-500 dark:text-gray-400">
       $
       {selectedPrinting?.treatments
         .filter((t) => t.name === selectedPrinting?.selectedTreatment)[0]
@@ -117,7 +117,7 @@ const CardItem = ({
     </span>
     {selectedPrinting.selectedTreatment &&
       selectedPrinting.selectedTreatment !== Treatment.Normal && (
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
           {selectedPrinting.selectedTreatment}
         </span>
       )}
