@@ -10,6 +10,7 @@ for their pet decks.
 - fix bug where split named cards don't load images
 - allow users to page through printings
 - add loading screen
+- refactor deck viewer into subcomponents
 
 ## credits
 
