@@ -1,26 +1,16 @@
-# react-vite-shadcn-template
+# bling-my-deck
 
-![visitors](https://img.shields.io/endpoint?url=https://vu-mi.com/api/v1/views?id=jcserv/react-vite-shadcn-template)
+![visitors](https://img.shields.io/endpoint?url=https://vu-mi.com/api/v1/views?id=jcserv/bling-my-deck)
 
-this template can be used to quickly setup a react + typeScript + vite + shadcn site,
-with all the required configuration out of the box.
+bling-my-deck is a simple web application to help Magic: The Gathering users find the maximum ceiling
+for their pet decks.
 
-## features
+## todo
 
-- ✨ components & styling with tailwindcss & shadcn
-- 📦 bundling via vite
-- 🔀 routing w/ tanStack router
-- 🧪 unit/component tests setup (see Header.cy.tsx & utils.test.ts)
-- 🌑 dark mode
-- ✅ continuous integration/deployment with github workflows & vercel
+- fix bug where split named cards don't load images
+- allow users to page through printings
+- add loading screen
 
-## dependencies
+## credits
 
-- [vite](https://vite.dev/)
-- [tailwindcss](https://tailwindcss.com/)
-- [shadcn](https://ui.shadcn.com/docs)
-- [tanstack router](https://tanstack.com/router/latest/docs/framework/react/overview)
-
-## references
-
-- [shadcn-vite template](https://github.com/shadcn/vite-template)
+- [Scryfall API](https://scryfall.com/)
