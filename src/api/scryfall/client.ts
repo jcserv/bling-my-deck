@@ -1,3 +1,16 @@
+type ImageURIs = {
+  small: string;
+  normal: string;
+  large: string;
+  png: string;
+  art_crop: string;
+  border_crop: string;
+}
+
+type CardFace = {
+  image_uris: ImageURIs
+}
+
 export interface ScryfallCard {
   id: string;
   name: string;
@@ -11,14 +24,8 @@ export interface ScryfallCard {
   set_name: string;
   set: string;
   collector_number: string;
-  image_uris: {
-    small: string;
-    normal: string;
-    large: string;
-    png: string;
-    art_crop: string;
-    border_crop: string;
-  };
+  card_faces: CardFace[];
+  image_uris: ImageURIs | null;
 }
 
 interface ScryfallSearchResponse {

@@ -1,8 +1,15 @@
-import { ScryfallClient, ScryfallCard } from "@/api/scryfall/client";
-import { Submission, DeckPricingResult, CardOption, Card, Treatment } from "@/types";
+import { fetchCardPrintings } from "@/api/scryfall/cache";
+import { ScryfallCard } from "@/api/scryfall/client";
+import {
+  Submission,
+  DeckPricingResult,
+  CardOption,
+  Card,
+  Treatment,
+} from "@/types";
 
 export class BlingService {
-  constructor(private scryfallClient: ScryfallClient) {}
+  constructor() {}
 
   async processDecklist(submission: Submission): Promise<DeckPricingResult> {
     const cardMap: { [name: string]: CardOption[] } = {};
@@ -10,10 +17,14 @@ export class BlingService {
 
     await Promise.all(
       submission.decklist.map(async (card) => {
-        const printings = await this.scryfallClient.getAllPrintings(card.name);
-        const options = this.processCardPrintings(printings, card, submission.treatments);
+        const printings = await fetchCardPrintings(card.name);
+        const options = this.processCardPrintings(
+          printings,
+          card,
+          submission.treatments
+        );
         cardMap[card.name] = options;
-        
+
         const mostExpensiveOption = this.findMostExpensiveOption(
           options,
           submission.treatments
@@ -32,31 +43,40 @@ export class BlingService {
     submissionCard: Card,
     allowedTreatments: Treatment[]
   ): CardOption[] {
+    console.log(submissionCard.name);
+    if (submissionCard.name.startsWith("Invasion of Ikoria"))
+      console.log(printings);
     return printings
-      .filter(printing => 
-        !submissionCard.set || printing.set_name === submissionCard.set
+      .filter(
+        (printing) =>
+          !submissionCard.set || printing.set_name === submissionCard.set
       )
-      .filter(printing =>
-        !submissionCard.collectorNumber || 
-        printing.collector_number === submissionCard.collectorNumber
+      .filter(
+        (printing) =>
+          !submissionCard.collectorNumber ||
+          printing.collector_number === submissionCard.collectorNumber
       )
-      .map(printing => ({
+      .map((printing) => ({
         id: printing.id,
         cardName: printing.name,
         cardType: this.parseMainCardType(printing.type_line),
         setName: printing.set_name,
         setCode: printing.set,
         collectorNumber: printing.collector_number,
-        image: printing.image_uris?.normal,
+        image: printing.card_faces
+          ? printing.card_faces[0].image_uris?.normal
+          : printing.image_uris?.normal,
         quantity: submissionCard.quantity,
         requestedSet: submissionCard.set,
         requestedCollectorNumber: submissionCard.collectorNumber,
         selected: false,
-        treatments: allowedTreatments.map(treatment => ({
+        treatments: allowedTreatments.map((treatment) => ({
           name: treatment,
-          price: this.parsePrice(this.getPriceForTreatment(printing, treatment)),
-          available: this.isTreatmentAvailable(printing, treatment)
-        }))
+          price: this.parsePrice(
+            this.getPriceForTreatment(printing, treatment)
+          ),
+          available: this.isTreatmentAvailable(printing, treatment),
+        })),
       }));
   }
 
@@ -66,41 +86,43 @@ export class BlingService {
   }
 
   private parseMainCardType(type_line: string | undefined): string {
-    if (!type_line) return '';
-
-    const typeMapping: { [key: string]: string } = {
-      'Artifact Creature': 'Creature',
-      'Artifact Land': 'Land',
-      'Basic Land': 'Land',
-      'Basic Snow Land': 'Land',
-      'Enchantment Creature': 'Creature',
-      'Enchantment Land': 'Land',
-      'Land Creature': 'Land',
-      'Legendary Land': 'Land',
-      'Legendary Artifact': 'Artifact',
-      'Legendary Enchantment': 'Enchantment',
-      'Legendary Artifact Creature': 'Creature',
-      'Legendary Creature': 'Creature',
-      'Legendary Planeswalker': 'Planeswalker'
-    };
-
-    const mainType = type_line.split(' // ')[0].split(' — ')[0];
-    return typeMapping[mainType] || mainType;
+    if (!type_line) return "";
+    if (type_line.includes("Planeswalker")) return "Planeswalker";
+    if (type_line.includes("Battle")) return "Battle";
+    if (type_line.includes("Land")) return "Land";
+    if (type_line.includes("Creature")) return "Creature";
+    if (type_line.includes("Artifact")) return "Artifact";
+    if (type_line.includes("Enchantment")) return "Enchantment";
+    if (type_line.includes("Sorcery")) return "Sorcery";
+    if (type_line.includes("Instant")) return "Instant";
+    return "";
   }
 
-  private getPriceForTreatment(card: ScryfallCard, treatment: Treatment): string | null {
+  private getPriceForTreatment(
+    card: ScryfallCard,
+    treatment: Treatment
+  ): string | null {
     switch (treatment) {
-      case Treatment.Normal: return card.prices.usd;
-      case Treatment.Foil: return card.prices.usd_foil;
-      case Treatment.Etched: return card.prices.usd_etched;
+      case Treatment.Normal:
+        return card.prices.usd;
+      case Treatment.Foil:
+        return card.prices.usd_foil;
+      case Treatment.Etched:
+        return card.prices.usd_etched;
     }
   }
 
-  private isTreatmentAvailable(card: ScryfallCard, treatment: Treatment): boolean {
+  private isTreatmentAvailable(
+    card: ScryfallCard,
+    treatment: Treatment
+  ): boolean {
     switch (treatment) {
-      case Treatment.Normal: return card.finishes.includes('nonfoil');
-      case Treatment.Foil: return card.finishes.includes('foil');
-      case Treatment.Etched: return card.finishes.includes('etched');
+      case Treatment.Normal:
+        return card.finishes.includes("nonfoil");
+      case Treatment.Foil:
+        return card.finishes.includes("foil");
+      case Treatment.Etched:
+        return card.finishes.includes("etched");
     }
   }
 
@@ -111,8 +133,8 @@ export class BlingService {
     let maxPrice = -1;
     let expensiveOption: CardOption | undefined;
 
-    options.forEach(option => {
-      option.treatments.forEach(treatment => {
+    options.forEach((option) => {
+      option.treatments.forEach((treatment) => {
         if (
           treatment.available &&
           treatment.price !== null &&
@@ -123,7 +145,7 @@ export class BlingService {
           expensiveOption = {
             ...option,
             selected: true,
-            selectedTreatment: treatment.name
+            selectedTreatment: treatment.name,
           };
         }
       });
@@ -141,25 +163,29 @@ export class BlingService {
     let unavailableTreatments = 0;
     let totalCards = 0;
 
-    Object.values(blingMap).flat().forEach(card => {
-      if (!card.selected || !card.selectedTreatment) return;
+    Object.values(blingMap)
+      .flat()
+      .forEach((card) => {
+        if (!card.selected || !card.selectedTreatment) return;
 
-      const treatment = card.treatments.find(t => t.name === card.selectedTreatment);
-      if (treatment) {
-        if (treatment.price === null) {
-          missingPrices = true;
-        } else {
-          totalPrice += treatment.price * card.quantity;
+        const treatment = card.treatments.find(
+          (t) => t.name === card.selectedTreatment
+        );
+        if (treatment) {
+          if (treatment.price === null) {
+            missingPrices = true;
+          } else {
+            totalPrice += treatment.price * card.quantity;
+          }
+          if (!treatment.available) {
+            unavailableTreatments++;
+          }
+          if (card.selected) {
+            selectedCards++;
+          }
+          totalCards += card.quantity;
         }
-        if (!treatment.available) {
-          unavailableTreatments++;
-        }
-        if (card.selected) {
-          selectedCards++;
-        }
-        totalCards += card.quantity;
-      }
-    });
+      });
 
     return {
       bling: blingMap,
@@ -170,8 +196,8 @@ export class BlingService {
         totalCards,
         uniqueCards: Object.keys(cardMap).length,
         selectedCards,
-        unavailableTreatments
-      }
+        unavailableTreatments,
+      },
     };
   }
 
@@ -183,14 +209,14 @@ export class BlingService {
     treatment?: Treatment
   ): DeckPricingResult {
     const updatedCards = { ...result.cards };
-    
+
     if (updatedCards[cardName]) {
-      updatedCards[cardName] = updatedCards[cardName].map(card => {
+      updatedCards[cardName] = updatedCards[cardName].map((card) => {
         if (card.id === printingId) {
           return {
             ...card,
             selected,
-            selectedTreatment: treatment || card.selectedTreatment
+            selectedTreatment: treatment || card.selectedTreatment,
           };
         }
         return card;
@@ -202,7 +228,9 @@ export class BlingService {
 
   getBlingPrice(result: DeckPricingResult): number {
     return Object.values(result.bling).reduce((total, card) => {
-      const treatment = card.treatments.find(t => t.name === card.selectedTreatment);
+      const treatment = card.treatments.find(
+        (t) => t.name === card.selectedTreatment
+      );
       return total + (treatment?.price || 0) * card.quantity;
     }, 0);
   }

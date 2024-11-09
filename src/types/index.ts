@@ -7,6 +7,27 @@ export type Card = {
   collectorNumber?: string | undefined;
 };
 
+export type CardType =
+  | "Creature"
+  | "Planeswalker"
+  | "Instant"
+  | "Sorcery"
+  | "Artifact"
+  | "Enchantment"
+  | "Land"
+  | "Battle";
+
+export const CardTypeOrdering: Record<CardType, number> = {
+  Battle: 0,
+  Planeswalker: 1,
+  Creature: 2,
+  Instant: 3,
+  Sorcery: 4,
+  Artifact: 5,
+  Enchantment: 6,
+  Land: 7,
+};
+
 const cardlineRegex =
   /^(\d+)\s+(.+?)(?:\s+\(([A-Z0-9]+)\)\s+(\d+))?(?:\s+\[([A-Z0-9]+)\])?$/;
 
