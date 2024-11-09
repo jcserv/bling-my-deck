@@ -23,23 +23,46 @@ import {
 import currency from "@/assets/currency.json";
 import { AllTreatments, Treatment } from "@/types/treatment";
 import { Checkbox } from "./ui/checkbox";
+import { useLocalStorage } from "@/hooks/localStorage";
+import { ONE_DAY_IN_MILLISECONDS } from "@/types/constants";
+import { parseDeckList } from "@/types/card";
+import { useNavigate } from "@tanstack/react-router";
 
-const decklistRegex = /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
+const decklistRegex =
+  /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
 
 const formSchema = z.object({
-  decklist: z.string().min(1, "Please enter one or more cards").regex(
-    RegExp(decklistRegex),
-    'Invalid decklist format'
+  decklist: z
+    .string()
+    .min(1, "Please enter one or more cards")
+    .regex(RegExp(decklistRegex), 'Invalid decklist format')
+  .refine(
+    (decklist) => {
+      return decklist.split(/\r?\n/).length <= 100
+    },
+    {
+      message: "Decklist cannot contain more than 100 cards"
+    }
   ),
   treatments: z.array(z.nativeEnum(Treatment), {
     message: "Please select one or more treatments",
   }),
-  localCurrency: z.enum([currency[0].value, ...currency.map((currency) => currency.value)], {
-    message: "Please select your local currency",
-  }),
+  localCurrency: z.enum(
+    [currency[0].value, ...currency.map((currency) => currency.value)],
+    {
+      message: "Please select your local currency",
+    }
+  ),
 });
 
 export const CartForm: React.FC = () => {
+  const navigate = useNavigate();
+  const [, setSubmission] = useLocalStorage(
+    "submission",
+    null,
+    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS)
+  );
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,8 +72,19 @@ export const CartForm: React.FC = () => {
     },
   });
 
+  const numCards = form
+    .watch("decklist")
+    .split("\n")
+    .filter((x) => x).length;
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    setSubmission({
+      ...values,
+      decklist: parseDeckList(values.decklist),
+    });
+    navigate({
+      to: "/overview",
+    });
   }
 
   return (
@@ -66,7 +100,15 @@ export const CartForm: React.FC = () => {
               name="decklist"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base">Decklist</FormLabel>
+                  <div className="flex flex-row items-end">
+                    <FormLabel className="text-base">Decklist</FormLabel>
+                    <p
+                      className={`text-sm ml-2 ${numCards > 100 ? "text-red-500" : "text-muted-foreground"}`}
+                    >
+                      ({numCards}
+                      /100 cards)
+                    </p>
+                  </div>
                   <FormControl>
                     <Textarea
                       placeholder="4 Lightning Bolt"
@@ -97,7 +139,11 @@ export const CartForm: React.FC = () => {
                     </FormControl>
                     <SelectContent>
                       {currency.map((currency) => (
-                        <SelectItem key={currency.value} value={currency.value}>
+                        <SelectItem
+                          key={currency.value}
+                          value={currency.value}
+                          disabled={currency.disabled}
+                        >
                           {currency.emoji} {currency.label}
                         </SelectItem>
                       ))}
@@ -113,7 +159,7 @@ export const CartForm: React.FC = () => {
               render={() => (
                 <FormItem>
                   <div>
-                    <FormLabel className="text-base">Retailers</FormLabel>
+                    <FormLabel className="text-base">Treatments</FormLabel>
                   </div>
                   {AllTreatments.map((treatment) => (
                     <FormField
@@ -128,7 +174,9 @@ export const CartForm: React.FC = () => {
                           >
                             <FormControl>
                               <Checkbox
-                                checked={field.value?.includes(treatment as Treatment)}
+                                checked={field.value?.includes(
+                                  treatment as Treatment
+                                )}
                                 onCheckedChange={(checked) => {
                                   return checked
                                     ? field.onChange([

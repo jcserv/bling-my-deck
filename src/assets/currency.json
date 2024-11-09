@@ -1,8 +1,15 @@
 [
     {
+        "country": "United States",
+        "emoji": "🇺🇸",
+        "label": "USD",
+        "value": "USD"
+    },
+    {
         "country": "Canada",
         "emoji": "🇨🇦",
         "label": "CAD",
-        "value": "CAD"
+        "value": "CAD",
+        "disabled": true
     }
 ]
