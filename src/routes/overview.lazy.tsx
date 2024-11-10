@@ -39,12 +39,11 @@ function Overview() {
 
     fetchData()
       .then(() => setTimeout(() => setLoading(false), 2500))
-      .catch((err) => {
-        console.log(err);
+      .catch((err: Error) => {
         navigate({
           to: "/",
           search: {
-            error: err,
+            error: err.stack ?? err.message,
           }
         });
       });
@@ -53,6 +52,7 @@ function Overview() {
   if (!submission) {
     navigate({
       to: "/",
+      search: { error: "" },
     });
   }
 

@@ -39,7 +39,7 @@ function Index() {
             </AlertDescription>
           </Alert>
         ) : (
-          <Alert className="w-1/2 max-w-4xl bg-red-400 dark:bg-red-600 my-4 md:my-8">
+          <Alert className="w-1/2 max-w-4xl bg-red-400 dark:bg-red-600 my-4 md:my-8 overflow-x-auto">
             <Info className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription className="space-y-1">
