@@ -1,13 +1,14 @@
-import { CartForm } from "@/components/CartForm";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { createFileRoute } from "@tanstack/react-router";
+import { Info } from "lucide-react";
+
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@radix-ui/react-accordion";
-import { createFileRoute } from "@tanstack/react-router";
-import { Info } from "lucide-react";
+} from "@/components/ui/accordion";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { CartForm } from "@/components/CartForm";
 
 type Params = {
   error: string;

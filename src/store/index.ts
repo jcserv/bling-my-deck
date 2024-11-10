@@ -1,6 +1,7 @@
+import { Store } from "@tanstack/store";
+
 import { ScryfallCard } from "@/api/scryfall/client";
 import { queryClient } from "@/routes/__root";
-import { Store } from "@tanstack/store";
 
 interface CardStore {
   cards: {

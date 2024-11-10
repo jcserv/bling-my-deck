@@ -1,6 +1,6 @@
-import { scryfallClient } from "@/routes/__root";
+import { ScryfallCard } from "@/api/scryfall/client";
 import { cardStore, cardActions } from "@/store";
-import { ScryfallCard } from "./client";
+import { scryfallClient } from "@/routes/__root";
 
 export const fetchCardPrintings = async (cardName: string): Promise<ScryfallCard[]> => {
     const cached = cardStore.state.cards[cardName];

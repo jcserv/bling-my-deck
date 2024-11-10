@@ -1,7 +1,10 @@
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -10,7 +13,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -18,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "./ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 import { useLocalStorage } from "@/hooks/localStorage";
 import {
   ONE_DAY_IN_MILLISECONDS,
@@ -26,9 +28,8 @@ import {
   Treatment,
   AllTreatments,
 } from "@/types";
-import { useNavigate } from "@tanstack/react-router";
+
 import currency from "@/assets/currency.json";
-import { AnalyticsEvents, captureEvent } from "@/lib/analytics";
 
 const decklistRegex = /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
 
@@ -81,7 +82,6 @@ export const CartForm: React.FC = () => {
       ...values,
       decklist: parseDeckList(values.decklist),
     });
-    captureEvent(AnalyticsEvents.DECKLIST_SUBMITTED);
     navigate({
       to: "/overview",
     });

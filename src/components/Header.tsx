@@ -1,7 +1,8 @@
-import { Github } from "lucide-react";
-import { ModeToggle } from "./mode-toggle";
-import { Button } from "./ui/button";
 import { Link } from "@tanstack/react-router";
+import { Github } from "lucide-react";
+
+import { ModeToggle } from "@/components/mode-toggle";
+import { Button } from "@/components/ui/button";
 
 export const Header: React.FC = () => {
   return (

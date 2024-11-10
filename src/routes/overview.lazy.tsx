@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+
 import DeckViewer from "@/components/DeckViewer";
 import { Loading } from "@/components/Loading";
 import { useLocalStorage } from "@/hooks/localStorage";
 import { BlingService } from "@/services/bling-service";
 import { DeckPricingResult, Submission } from "@/types";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 
 const loadingMessages = [
   "Bolting the bird",

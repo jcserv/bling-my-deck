@@ -1,6 +1,7 @@
+import { useQueries, useQuery } from "@tanstack/react-query";
+
 import { fetchCardPrintings } from "@/api/scryfall/cache";
 import { cardKeys } from "@/store";
-import { useQueries, useQuery } from "@tanstack/react-query";
 
 export function useCardPrintings(cardName: string) {
   return useQuery({

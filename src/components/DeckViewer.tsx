@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { DeckPricingResult, CardOption, CardType } from "@/types";
-import { Button } from "@/components/ui/button";
 import { CopyIcon } from "lucide-react";
+
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CardDisplay } from "@/components/CardDisplay";
+import { CardTypeSection } from "@/components/CardTypeSection";
+import { useToast } from "@/hooks/use-toast"
 import { toMoxfield } from "@/lib/decklist";
-import { CardDisplay } from "./CardDisplay";
-import { CardTypeSection } from "./CardTypeSection";
+import { DeckPricingResult, CardOption, CardType } from "@/types";
 
 const DeckViewer = ({
   deckResult,
@@ -14,6 +16,7 @@ const DeckViewer = ({
 }) => {
   const [deck, setDeck] = useState<CardOption[]>([]);
   const [selectedCard, setSelectedCard] = useState<CardOption | null>(null);
+  const { toast } = useToast();
 
   const CardTypeGroups: Record<CardType, string[]> = {
     Battle: [],
@@ -50,6 +53,10 @@ const DeckViewer = ({
   const copyDeckList = () => {
     if (!deckResult) return;
     navigator.clipboard.writeText(toMoxfield(deck));
+    toast({
+      title: "Decklist copied to clipboard",
+      description: "You can now paste it into Moxfield",
+    })
   };
 
   if (!deckResult) return null;
