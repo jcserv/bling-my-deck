@@ -35,7 +35,7 @@ export class BlingService {
       })
     );
 
-    return this.calculateDeckStats(cardMap, blingMap);
+    return this.calculateDeckStats(submission, cardMap, blingMap);
   }
 
   private processCardPrintings(
@@ -151,13 +151,13 @@ export class BlingService {
   }
 
   private calculateDeckStats(
+    submission: Submission,
     cardMap: { [name: string]: CardOption[] },
     blingMap: { [name: string]: CardOption }
   ): DeckPricingResult {
     let totalPrice = 0;
     let missingPrices = false;
     let selectedCards = 0;
-    let unavailableTreatments = 0;
     let totalCards = 0;
 
     Object.values(blingMap)
@@ -173,9 +173,6 @@ export class BlingService {
             missingPrices = true;
           } else {
             totalPrice += treatment.price * card.quantity;
-          }
-          if (!treatment.available) {
-            unavailableTreatments++;
           }
           if (card.selected) {
             selectedCards++;
@@ -193,34 +190,9 @@ export class BlingService {
         totalCards,
         uniqueCards: Object.keys(cardMap).length,
         selectedCards,
-        unavailableTreatments,
+        numMissingCards: submission.decklist.length - Object.keys(blingMap).length,
       },
     };
-  }
-
-  updateCardSelection(
-    result: DeckPricingResult,
-    cardName: string,
-    printingId: string,
-    selected: boolean,
-    treatment?: Treatment
-  ): DeckPricingResult {
-    const updatedCards = { ...result.cards };
-
-    if (updatedCards[cardName]) {
-      updatedCards[cardName] = updatedCards[cardName].map((card) => {
-        if (card.id === printingId) {
-          return {
-            ...card,
-            selected,
-            selectedTreatment: treatment || card.selectedTreatment,
-          };
-        }
-        return card;
-      });
-    }
-
-    return this.calculateDeckStats(updatedCards, result.bling);
   }
 
   getBlingPrice(result: DeckPricingResult): number {

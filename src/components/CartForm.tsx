@@ -44,9 +44,7 @@ const formSchema = z.object({
         message: "Decklist cannot contain more than 100 cards",
       }
     ),
-  treatments: z.array(z.nativeEnum(Treatment), {
-    message: "Please select one or more treatments",
-  }),
+  treatments: z.array(z.nativeEnum(Treatment)).min(1, "Please select one or more finishes"),
   localCurrency: z.enum(
     [currency[0].value, ...currency.map((currency) => currency.value)],
     {
@@ -156,7 +154,7 @@ export const CartForm: React.FC = () => {
             render={() => (
               <FormItem>
                 <div>
-                  <FormLabel className="text-base">Filters</FormLabel>
+                  <FormLabel className="text-base">Finishes</FormLabel>
                 </div>
                 {AllTreatments.map((treatment) => (
                   <FormField

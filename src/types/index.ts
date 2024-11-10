@@ -100,6 +100,6 @@ export interface DeckPricingResult {
     totalCards: number;
     uniqueCards: number;
     selectedCards: number;
-    unavailableTreatments: number;
+    numMissingCards: number;
   };
 }

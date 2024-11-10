@@ -87,6 +87,16 @@ const DeckViewer = ({
               Copy Decklist (Moxfield)
             </Button>
           </Card>
+          {deckResult.stats.numMissingCards > 0 && (
+            <Card className="p-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Missing cards:</span>
+              <span className="font-semibold">
+                {deckResult.stats.numMissingCards}
+              </span>
+            </div>
+          </Card>
+          )}
         </div>
       </div>
       <div
