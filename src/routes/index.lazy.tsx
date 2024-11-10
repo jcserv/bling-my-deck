@@ -9,23 +9,21 @@ export const Route = createLazyFileRoute("/")({
 
 function Index() {
   return (
-    <section className="p-2 text-center">
-      <div className="h-[80vh] w-screen flex flex-col items-center">
-        <div className="flex flex-row">
-        <Alert className="text-start bg-blue-400 dark:bg-blue-600 my-8">
-            <Info className="h-4 w-4" />
-            <AlertTitle>Info</AlertTitle>
-            <AlertDescription>
-              Enter the cards you want to bling out, and we&apos;ll show you <br />
-              all of the most expensive printings available for each card, as well as <br />
-              the total cost.
-            </AlertDescription>
-          </Alert>
-        </div>
-        <div className="flex flex-row">
-          <CartForm />
-        </div>
+    <section className="p-2 md:p-4">
+      <div className="min-h-[80vh] w-full flex flex-col items-center">
+        <Alert className="w-full max-w-4xl bg-blue-400 dark:bg-blue-600 my-4 md:my-8">
+          <Info className="h-4 w-4" />
+          <AlertTitle>Info</AlertTitle>
+          <AlertDescription className="space-y-1">
+            <p>Enter the cards you want to bling out, and we&apos;ll show you</p>
+            <p>all of the most expensive printings available for each card, as well as</p>
+            <p>the total cost.</p>
+          </AlertDescription>
+        </Alert>
+        <CartForm />
       </div>
     </section>
   );
 }
+
+export default Index;

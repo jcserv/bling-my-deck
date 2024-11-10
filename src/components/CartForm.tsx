@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,8 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import currency from "@/assets/currency.json";
 import { Checkbox } from "./ui/checkbox";
 import { useLocalStorage } from "@/hooks/localStorage";
 import {
@@ -30,9 +27,9 @@ import {
   AllTreatments,
 } from "@/types";
 import { useNavigate } from "@tanstack/react-router";
+import currency from "@/assets/currency.json";
 
-const decklistRegex =
-  /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
+const decklistRegex = /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
 
 const formSchema = z.object({
   decklist: z
@@ -91,126 +88,119 @@ export const CartForm: React.FC = () => {
   }
 
   return (
-    <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="text-start flex gap-8"
-        >
-          <div className="flex-grow w-100">
-            <FormField
-              control={form.control}
-              name="decklist"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex flex-row items-end">
-                    <FormLabel className="text-base">Decklist</FormLabel>
-                    <p
-                      className={`text-sm ml-2 ${numCards > 100 ? "text-red-500" : "text-muted-foreground"}`}
-                    >
-                      ({numCards}
-                      /100 cards)
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Textarea
-                      placeholder="4 Lightning Bolt"
-                      className="h-64 w-[50vw]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="w-64 space-y-6">
-            <FormField
-              control={form.control}
-              name="localCurrency"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base">Currency</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full max-w-4xl flex flex-col md:flex-row gap-4 md:gap-8 p-4"
+      >
+        <div className="flex-grow min-w-0">
+          <FormField
+            control={form.control}
+            name="decklist"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-row items-end">
+                  <FormLabel className="text-base">Decklist</FormLabel>
+                  <p
+                    className={`text-sm ml-2 ${
+                      numCards > 100 ? "text-red-500" : "text-muted-foreground"
+                    }`}
                   >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your local currency" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {currency.map((currency) => (
-                        <SelectItem
-                          key={currency.value}
-                          value={currency.value}
-                          disabled={currency.disabled}
+                    ({numCards}/100 cards)
+                  </p>
+                </div>
+                <FormControl>
+                  <Textarea
+                    placeholder="4 Lightning Bolt"
+                    className="h-64 w-full resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="w-full md:w-64 space-y-6">
+          <FormField
+            control={form.control}
+            name="localCurrency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base">Currency</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your local currency" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {currency.map((currency) => (
+                      <SelectItem
+                        key={currency.value}
+                        value={currency.value}
+                        disabled={currency.disabled}
+                      >
+                        {currency.emoji} {currency.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="treatments"
+            render={() => (
+              <FormItem>
+                <div>
+                  <FormLabel className="text-base">Filters</FormLabel>
+                </div>
+                {AllTreatments.map((treatment) => (
+                  <FormField
+                    key={treatment}
+                    control={form.control}
+                    name="treatments"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={treatment}
+                          className="flex flex-row items-start space-x-2"
                         >
-                          {currency.emoji} {currency.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="treatments"
-              render={() => (
-                <FormItem>
-                  <div>
-                    <FormLabel className="text-base">Filters</FormLabel>
-                  </div>
-                  {AllTreatments.map((treatment) => (
-                    <FormField
-                      key={treatment}
-                      control={form.control}
-                      name="treatments"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={treatment}
-                            className="flex flex-row items-start space-x-2"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(
-                                  treatment as Treatment
-                                )}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...field.value,
-                                        treatment,
-                                      ])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== treatment
-                                        )
-                                      );
-                                }}
-                                className="mt-2"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal leading-none">
-                              {treatment}
-                            </FormLabel>
-                          </FormItem>
-                        );
-                      }}
-                    />
-                  ))}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Submit</Button>
-          </div>
-        </form>
-      </Form>
-    </>
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(treatment as Treatment)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, treatment])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== treatment
+                                      )
+                                    );
+                              }}
+                              className="mt-2"
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal leading-none">
+                            {treatment}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="w-full">Submit</Button>
+        </div>
+      </form>
+    </Form>
   );
 };
+
+export default CartForm;
