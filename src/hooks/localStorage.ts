@@ -26,19 +26,19 @@ function getStorageValue(key: string, initialValue: any) {
 export const useLocalStorage = (
   key: string,
   initialValue: any,
-  expiration?: Date
+  expiration?: Date,
 ) => {
   const [entry, setEntry] = useState(() => getStorageValue(key, initialValue));
   useEffect(() => {
     if (entry === null) {
       localStorage.setItem(
         key,
-        JSON.stringify({ value: initialValue, expiration })
+        JSON.stringify({ value: initialValue, expiration }),
       );
     } else if (entry.expiration) {
       localStorage.setItem(
         key,
-        JSON.stringify({ value: entry.value, expiration })
+        JSON.stringify({ value: entry.value, expiration }),
       );
     } else {
       localStorage.setItem(key, JSON.stringify(entry));

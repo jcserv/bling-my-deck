@@ -21,18 +21,18 @@ export class BlingService {
         const options = this.processCardPrintings(
           printings,
           card,
-          submission.treatments
+          submission.treatments,
         );
         cardMap[card.name] = options;
 
         const mostExpensiveOption = this.findMostExpensiveOption(
           options,
-          submission.treatments
+          submission.treatments,
         );
         if (mostExpensiveOption) {
           blingMap[card.name] = mostExpensiveOption;
         }
-      })
+      }),
     );
 
     return this.calculateDeckStats(submission, cardMap, blingMap);
@@ -41,17 +41,17 @@ export class BlingService {
   private processCardPrintings(
     printings: ScryfallCard[],
     submissionCard: Card,
-    allowedTreatments: Treatment[]
+    allowedTreatments: Treatment[],
   ): CardOption[] {
     return printings
       .filter(
         (printing) =>
-          !submissionCard.set || printing.set_name === submissionCard.set
+          !submissionCard.set || printing.set_name === submissionCard.set,
       )
       .filter(
         (printing) =>
           !submissionCard.collectorNumber ||
-          printing.collector_number === submissionCard.collectorNumber
+          printing.collector_number === submissionCard.collectorNumber,
       )
       .map((printing) => ({
         id: printing.id,
@@ -70,7 +70,7 @@ export class BlingService {
         treatments: allowedTreatments.map((treatment) => ({
           name: treatment,
           price: this.parsePrice(
-            this.getPriceForTreatment(printing, treatment)
+            this.getPriceForTreatment(printing, treatment),
           ),
           available: this.isTreatmentAvailable(printing, treatment),
         })),
@@ -97,7 +97,7 @@ export class BlingService {
 
   private getPriceForTreatment(
     card: ScryfallCard,
-    treatment: Treatment
+    treatment: Treatment,
   ): string | null {
     switch (treatment) {
       case Treatment.Normal:
@@ -111,7 +111,7 @@ export class BlingService {
 
   private isTreatmentAvailable(
     card: ScryfallCard,
-    treatment: Treatment
+    treatment: Treatment,
   ): boolean {
     switch (treatment) {
       case Treatment.Normal:
@@ -125,7 +125,7 @@ export class BlingService {
 
   private findMostExpensiveOption(
     options: CardOption[],
-    allowedTreatments: Treatment[]
+    allowedTreatments: Treatment[],
   ): CardOption | undefined {
     let maxPrice = -1;
     let expensiveOption: CardOption | undefined;
@@ -153,7 +153,7 @@ export class BlingService {
   private calculateDeckStats(
     submission: Submission,
     cardMap: { [name: string]: CardOption[] },
-    blingMap: { [name: string]: CardOption }
+    blingMap: { [name: string]: CardOption },
   ): DeckPricingResult {
     let totalPrice = 0;
     let missingPrices = false;
@@ -166,7 +166,7 @@ export class BlingService {
         if (!card.selected || !card.selectedTreatment) return;
 
         const treatment = card.treatments.find(
-          (t) => t.name === card.selectedTreatment
+          (t) => t.name === card.selectedTreatment,
         );
         if (treatment) {
           if (treatment.price === null) {
@@ -190,7 +190,8 @@ export class BlingService {
         totalCards,
         uniqueCards: Object.keys(cardMap).length,
         selectedCards,
-        numMissingCards: submission.decklist.length - Object.keys(blingMap).length,
+        numMissingCards:
+          submission.decklist.length - Object.keys(blingMap).length,
       },
     };
   }
@@ -198,7 +199,7 @@ export class BlingService {
   getBlingPrice(result: DeckPricingResult): number {
     return Object.values(result.bling).reduce((total, card) => {
       const treatment = card.treatments.find(
-        (t) => t.name === card.selectedTreatment
+        (t) => t.name === card.selectedTreatment,
       );
       return total + (treatment?.price || 0) * card.quantity;
     }, 0);

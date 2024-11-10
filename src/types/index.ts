@@ -39,7 +39,7 @@ export function parseDeckList(input: string): Card[] {
     const match = line.trim().match(cardlineRegex);
     if (match) {
       const [, quantity, name, set, collectorNumber, alternateSet] = match;
-      const cardKey = `${name}-${set || alternateSet || ''}-${collectorNumber || ''}`;
+      const cardKey = `${name}-${set || alternateSet || ""}-${collectorNumber || ""}`;
       if (cardMap[cardKey]) {
         cardMap[cardKey].quantity += parseInt(quantity, 10);
       } else {
@@ -57,9 +57,9 @@ export function parseDeckList(input: string): Card[] {
 }
 
 export enum Treatment {
-  Normal = 'Normal',
-  Foil = 'Foil',
-  Etched = 'Etched',
+  Normal = "Normal",
+  Foil = "Foil",
+  Etched = "Etched",
 }
 
 export const AllTreatments: string[] = Object.values(Treatment);
@@ -68,7 +68,7 @@ export type Submission = {
   decklist: Card[];
   treatments: Treatment[];
   localCurrency: string;
-}
+};
 export interface CardOption {
   id: string;
   cardName: string;

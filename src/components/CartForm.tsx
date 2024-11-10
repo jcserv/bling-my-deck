@@ -31,7 +31,8 @@ import {
 
 import currency from "@/assets/currency.json";
 
-const decklistRegex = /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
+const decklistRegex =
+  /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
 
 const formSchema = z.object({
   decklist: z
@@ -44,14 +45,16 @@ const formSchema = z.object({
       },
       {
         message: "Decklist cannot contain more than 100 cards",
-      }
+      },
     ),
-  treatments: z.array(z.nativeEnum(Treatment)).min(1, "Please select one or more finishes"),
+  treatments: z
+    .array(z.nativeEnum(Treatment))
+    .min(1, "Please select one or more finishes"),
   localCurrency: z.enum(
     [currency[0].value, ...currency.map((currency) => currency.value)],
     {
       message: "Please select your local currency",
-    }
+    },
   ),
 });
 
@@ -60,7 +63,7 @@ export const CartForm: React.FC = () => {
   const [, setSubmission] = useLocalStorage(
     "submission",
     null,
-    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS)
+    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS),
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -128,7 +131,10 @@ export const CartForm: React.FC = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-base">Currency</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your local currency" />
@@ -171,14 +177,16 @@ export const CartForm: React.FC = () => {
                         >
                           <FormControl>
                             <Checkbox
-                              checked={field.value?.includes(treatment as Treatment)}
+                              checked={field.value?.includes(
+                                treatment as Treatment,
+                              )}
                               onCheckedChange={(checked) => {
                                 return checked
                                   ? field.onChange([...field.value, treatment])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value) => value !== treatment
-                                      )
+                                        (value) => value !== treatment,
+                                      ),
                                     );
                               }}
                               className="mt-2"
@@ -196,7 +204,9 @@ export const CartForm: React.FC = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">Submit</Button>
+          <Button type="submit" className="w-full">
+            Submit
+          </Button>
         </div>
       </form>
     </Form>

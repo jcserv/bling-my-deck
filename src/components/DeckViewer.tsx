@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CardDisplay } from "@/components/CardDisplay";
 import { CardTypeSection } from "@/components/CardTypeSection";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 import { toMoxfield } from "@/lib/decklist";
 import { DeckPricingResult, CardOption, CardType } from "@/types";
 
@@ -56,7 +56,7 @@ const DeckViewer = ({
     toast({
       title: "Decklist copied to clipboard",
       description: "You can now paste it into Moxfield",
-    })
+    });
   };
 
   if (!deckResult) return null;
@@ -67,7 +67,9 @@ const DeckViewer = ({
           <CardDisplay selectedCard={selectedCard} />
           <Card className="p-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Price:</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Price:
+              </span>
               <span className="font-semibold">
                 $
                 {selectedCard?.treatments
@@ -79,7 +81,9 @@ const DeckViewer = ({
           </Card>
           <Card className="p-4 space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Total Price:</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Total Price:
+              </span>
               <span className="font-semibold">
                 ${deckResult.totalPrice.toFixed(2)} USD
               </span>
@@ -96,19 +100,19 @@ const DeckViewer = ({
           </Card>
           {deckResult.stats.numMissingCards > 0 && (
             <Card className="p-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Missing cards:</span>
-              <span className="font-semibold">
-                {deckResult.stats.numMissingCards}
-              </span>
-            </div>
-          </Card>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Missing cards:
+                </span>
+                <span className="font-semibold">
+                  {deckResult.stats.numMissingCards}
+                </span>
+              </div>
+            </Card>
           )}
         </div>
       </div>
-      <div
-        className="flex-1 columns-[250px] gap-4"
-      >
+      <div className="flex-1 columns-[250px] gap-4">
         {Object.entries(groupedCards).map(
           ([type, cardNames]) =>
             cardNames.length > 0 && (
@@ -119,7 +123,7 @@ const DeckViewer = ({
                 deckResult={deckResult}
                 setSelectedCard={setSelectedCard}
               />
-            )
+            ),
         )}
       </div>
     </div>

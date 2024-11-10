@@ -5,7 +5,7 @@ export function toMoxfield(deck: CardOption[]): string {
     .filter((card) => card.selected)
     .map(
       (card) =>
-        `${card.quantity} ${card.cardName} (${card.setCode.toUpperCase()}) ${card.collectorNumber}${card.selectedTreatment === Treatment.Foil ? " *f*" : ""}`
+        `${card.quantity} ${card.cardName} (${card.setCode.toUpperCase()}) ${card.collectorNumber}${card.selectedTreatment === Treatment.Foil ? " *f*" : ""}`,
     )
     .join("\n");
 

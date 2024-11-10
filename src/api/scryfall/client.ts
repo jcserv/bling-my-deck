@@ -5,11 +5,11 @@ type ImageURIs = {
   png: string;
   art_crop: string;
   border_crop: string;
-}
+};
 
 type CardFace = {
-  image_uris: ImageURIs
-}
+  image_uris: ImageURIs;
+};
 
 export interface ScryfallCard {
   id: string;
@@ -56,7 +56,7 @@ export class ScryfallClient {
 
   private async fetchWithRetry(
     url: string,
-    retries: number = 3
+    retries: number = 3,
   ): Promise<Response> {
     await this.waitForRateLimit();
 

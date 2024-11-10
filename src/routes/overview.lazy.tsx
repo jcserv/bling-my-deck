@@ -45,7 +45,7 @@ function Overview() {
           to: "/",
           search: {
             error: err.stack ?? err.message,
-          }
+          },
         });
       });
   }, [submission]);

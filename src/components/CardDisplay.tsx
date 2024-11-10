@@ -27,12 +27,14 @@ export const CardDisplay = ({ selectedCard }: CardDisplayProps) => (
           <div className="card-content"></div>
         </div>
       </div>
-    ) : selectedCard && (
-      <img
-        src={selectedCard?.image}
-        alt={selectedCard?.cardName}
-        className="w-full h-full object-contain"
-      />
+    ) : (
+      selectedCard && (
+        <img
+          src={selectedCard?.image}
+          alt={selectedCard?.cardName}
+          className="w-full h-full object-contain"
+        />
+      )
     )}
   </Card>
 );

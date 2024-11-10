@@ -63,13 +63,13 @@ export const CardTypeSection = ({
           ? cardName.split("//")[0].trim()
           : cardName;
         const selectedPrinting = Object.entries(deckResult.bling).filter(
-          ([key]) => key.startsWith(cardNameKey)
+          ([key]) => key.startsWith(cardNameKey),
         )[0]?.[1];
         if (!selectedPrinting) {
           console.log(
             "No printings found for ",
             cardName,
-            "please open an issue."
+            "please open an issue.",
           );
           return null;
         }
@@ -106,7 +106,9 @@ const CardItem = ({
     className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer text-sm"
     onMouseEnter={() => setSelectedCard(selectedPrinting)}
   >
-    <span className="w-4 text-right text-gray-500 dark:text-gray-400">{quantity}</span>
+    <span className="w-4 text-right text-gray-500 dark:text-gray-400">
+      {quantity}
+    </span>
     <span className="flex-1 truncate">{cardName}</span>
     <span className="text-xs text-gray-500 dark:text-gray-400">
       $
