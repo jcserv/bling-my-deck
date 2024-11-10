@@ -28,6 +28,7 @@ import {
 } from "@/types";
 import { useNavigate } from "@tanstack/react-router";
 import currency from "@/assets/currency.json";
+import { AnalyticsEvents, captureEvent } from "@/lib/analytics";
 
 const decklistRegex = /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
 
@@ -80,6 +81,7 @@ export const CartForm: React.FC = () => {
       ...values,
       decklist: parseDeckList(values.decklist),
     });
+    captureEvent(AnalyticsEvents.DECKLIST_SUBMITTED);
     navigate({
       to: "/overview",
     });
