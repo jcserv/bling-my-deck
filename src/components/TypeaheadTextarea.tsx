@@ -1,176 +1,177 @@
 import * as React from "react";
-import { debounce } from "lodash";
+import { Loader2 } from "lucide-react";
 
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useAutocomplete } from "@/hooks/cardPrintings";
+import { useAutocomplete } from "@/hooks/autocomplete";
+import { cn } from "@/lib/utils";
 
-interface TypeaheadState {
-  word: string;
-  startPosition: number;
-  endPosition: number;
+interface TypeaheadTextareaProps extends React.ComponentProps<typeof Textarea> {
+  className?: string;
 }
-
-// Helper to get current word and its position
-const getCurrentWord = (
-  text: string,
-  cursorPosition: number
-): TypeaheadState => {
-  const textBeforeCursor = text.slice(0, cursorPosition);
-  const words = textBeforeCursor.split(/\s/);
-  const currentWord = words[words.length - 1];
-  const startPosition = textBeforeCursor.length - currentWord.length;
-
-  return {
-    word: currentWord,
-    startPosition,
-    endPosition: startPosition + currentWord.length,
-  };
-};
 
 export const TypeaheadTextarea = React.forwardRef<
   HTMLTextAreaElement,
-  React.ComponentProps<"textarea"> & {
-    className?: string;
-    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  }
->(({ className, onChange, ...props }, ref) => {
-  // Internal state
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [currentPosition, setCurrentPosition] = React.useState(0);
-  const internalRef = React.useRef<HTMLTextAreaElement>(null);
-  const combinedRef = useCombinedRefs(ref, internalRef);
+  TypeaheadTextareaProps
+>(({ className, onChange, value, ...props }, forwardedRef) => {
+  const [query, setQuery] = React.useState("");
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const localRef = React.useRef<HTMLTextAreaElement | null>(null);
 
-  const { data: suggestions, isLoading } = useAutocomplete(searchTerm);
+  const textareaRef = React.useMemo(() => {
+    return (node: HTMLTextAreaElement | null) => {
+      localRef.current = node;
+      if (typeof forwardedRef === "function") {
+        forwardedRef(node);
+      } else if (forwardedRef) {
+        forwardedRef.current = node;
+      }
+    };
+  }, [forwardedRef]);
 
-  const debouncedSearch = React.useCallback(
-    debounce((term: string) => {
-      setSearchTerm(term);
-    }, 300),
-    []
-  );
+  const { data: suggestions, isLoading } = useAutocomplete(query);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    const cursorPosition = e.target.selectionStart || 0;
-
-    if (onChange) {
-      onChange(e);
-    }
-
-    setCurrentPosition(cursorPosition);
-
-    const { word } = getCurrentWord(newValue, cursorPosition);
-    if (word.length >= 2) {
-      setIsOpen(true);
-      debouncedSearch(word);
-    } else {
-      setIsOpen(false);
-    }
+  const getCurrentLineQuery = (value: string, selectionStart: number) => {
+    const lines = value.slice(0, selectionStart).split("\n");
+    const currentLine = lines[lines.length - 1];
+    return currentLine.replace(/^\d+\s*/, "");
   };
 
-  // Handle suggestion selection
-  const handleSelect = (selectedValue: string) => {
-    if (!internalRef.current) return;
-
-    const textarea = internalRef.current;
-    const currentValue = textarea.value;
-    const { startPosition, endPosition } = getCurrentWord(
-      currentValue,
-      currentPosition
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newQuery = getCurrentLineQuery(
+      e.target.value,
+      e.target.selectionStart
     );
+    setQuery(newQuery);
+    setSelectedIndex(0);
+    onChange?.(e);
+  };
 
-    const newValue =
-      currentValue.slice(0, startPosition) +
-      selectedValue +
-      currentValue.slice(endPosition);
+  const handleSelect = (selectedValue: string) => {
+    const textarea = localRef.current;
+    if (!textarea) return;
 
-    const syntheticEvent = {
-      target: { value: newValue },
-    } as React.ChangeEvent<HTMLTextAreaElement>;
+    const { selectionStart } = textarea;
+    const currentValue = String(value ?? "");
+    const lines = currentValue.slice(0, selectionStart).split("\n");
+    const currentLine = lines[lines.length - 1];
+    const prefix = currentLine.match(/^\d+\s*/)?.[0] || "";
+
+    const beforeLines = lines.slice(0, -1);
+    const afterLines = currentValue.slice(selectionStart).split("\n").slice(1);
+
+    const newValue = [
+      ...beforeLines,
+      `${prefix}${selectedValue}`,
+      ...afterLines,
+    ].join("\n");
 
     if (onChange) {
+      const syntheticEvent = {
+        target: { value: newValue },
+        currentTarget: { value: newValue },
+      } as React.ChangeEvent<HTMLTextAreaElement>;
+
       onChange(syntheticEvent);
     }
 
-    const newPosition = startPosition + selectedValue.length;
+    setQuery("");
+    setSelectedIndex(0);
     textarea.focus();
-    textarea.setSelectionRange(newPosition, newPosition);
-    setCurrentPosition(newPosition);
-    setIsOpen(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (!suggestions?.length) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setSelectedIndex((i) => (i + 1) % suggestions.length);
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setSelectedIndex(
+          (i) => (i - 1 + suggestions.length) % suggestions.length
+        );
+        break;
+      case "Enter":
+        if (suggestions[selectedIndex]) {
+          e.preventDefault();
+          handleSelect(suggestions[selectedIndex]);
+        }
+        break;
+    }
+  };
+
+  const getDropdownPosition = () => {
+    const textarea = localRef.current;
+    if (!textarea) return { top: 0, left: 0 };
+
+    const { selectionStart } = textarea;
+    const currentValue = String(value ?? "");
+    const textBeforeCaret = currentValue.slice(0, selectionStart);
+    const lines = textBeforeCaret.split("\n");
+    const currentLineNumber = lines.length;
+
+    const computedStyle = window.getComputedStyle(textarea);
+    const lineHeight = parseInt(computedStyle.lineHeight);
+    const paddingTop = parseInt(computedStyle.paddingTop);
+
+    const top = paddingTop + lineHeight * currentLineNumber;
+    const left = parseInt(computedStyle.paddingLeft);
+
+    return { top, left };
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <div>
-          <Textarea
-            ref={combinedRef}
-            className={className}
-            onChange={handleChange}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                setIsOpen(false);
-              }
-            }}
-            {...props}
-          />
-        </div>
-      </PopoverTrigger>
-      <PopoverContent className="w-[400px] p-0" align="start" side="bottom">
-        <Command>
-          <CommandList>
-            <CommandEmpty>
-              {isLoading ? "Loading..." : "No results found."}
-            </CommandEmpty>
-            <CommandGroup>
-              {suggestions?.map((suggestion: string) => (
-                <CommandItem
-                  key={suggestion}
-                  value={suggestion}
-                  onSelect={handleSelect}
+    <div className="relative w-full">
+      <Textarea
+        ref={textareaRef}
+        className={className}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        value={value}
+        {...props}
+      />
+      {query.length >= 2 && (
+        <div
+          className="absolute z-50 min-w-[200px] max-w-[400px] rounded-md border bg-popover p-1 shadow-md"
+          style={getDropdownPosition()}
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center p-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </div>
+          ) : suggestions && suggestions.length > 0 ? (
+            <div className="py-1">
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSelect(suggestion);
+                  }}
+                  className={cn(
+                    "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    "focus:bg-accent focus:text-accent-foreground",
+                    index === selectedIndex &&
+                      "bg-accent text-accent-foreground"
+                  )}
                 >
                   {suggestion}
-                </CommandItem>
+                </button>
               ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+            </div>
+          ) : (
+            <div className="p-2 text-sm text-muted-foreground">
+              No matches found
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 });
 
 TypeaheadTextarea.displayName = "TypeaheadTextarea";
-
-function useCombinedRefs<T>(
-  ...refs: Array<React.ForwardedRef<T> | React.RefObject<T>>
-) {
-  const targetRef = React.useRef<T>(null);
-
-  React.useEffect(() => {
-    refs.forEach((ref) => {
-      if (!ref) return;
-
-      if (typeof ref === "function") {
-        ref(targetRef.current);
-      } else {
-        (ref as React.MutableRefObject<T | null>).current = targetRef.current;
-      }
-    });
-  }, [refs]);
-
-  return targetRef;
-}
