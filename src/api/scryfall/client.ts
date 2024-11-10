@@ -1,38 +1,16 @@
-type ImageURIs = {
-  small: string;
-  normal: string;
-  large: string;
-  png: string;
-  art_crop: string;
-  border_crop: string;
-};
-
-type CardFace = {
-  image_uris: ImageURIs;
-};
-
-export interface ScryfallCard {
-  id: string;
-  name: string;
-  type_line: string;
-  prices: {
-    usd: string | null;
-    usd_foil: string | null;
-    usd_etched: string | null;
-  };
-  finishes: string[];
-  set_name: string;
-  set: string;
-  collector_number: string;
-  card_faces: CardFace[];
-  image_uris: ImageURIs | null;
-}
+import { ScryfallCard } from "@/types/scryfall";
 
 interface ScryfallSearchResponse {
   data: ScryfallCard[];
   has_more: boolean;
   next_page: string | null;
   total_cards: number;
+}
+
+interface ScryfallAutocompleteResponse {
+  object: string;
+  total_values: number;
+  data: string[];
 }
 
 export class ScryfallClient {
@@ -56,7 +34,7 @@ export class ScryfallClient {
 
   private async fetchWithRetry(
     url: string,
-    retries: number = 3,
+    retries: number = 3
   ): Promise<Response> {
     await this.waitForRateLimit();
 
@@ -105,4 +83,15 @@ export class ScryfallClient {
 
     return allCards;
   }
+
+  async getCardNamesByAutocomplete(cardName: string): Promise<string[]> {
+    const query = encodeURIComponent(cardName);
+    const url = `https://api.scryfall.com/cards/autocomplete?q=${query}`;
+
+    const response = await this.fetchWithRetry(url);
+    const resp: ScryfallAutocompleteResponse = await response.json();
+    return resp.data;
+  }
 }
+
+

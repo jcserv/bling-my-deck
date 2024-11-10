@@ -1,6 +1,6 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
-import { fetchCardPrintings } from "@/api/scryfall/cache";
+import { queryCardNames, fetchCardPrintings } from "@/api/scryfall/cache";
 import { cardKeys } from "@/store";
 
 export function useCardPrintings(cardName: string) {
@@ -12,14 +12,11 @@ export function useCardPrintings(cardName: string) {
   });
 }
 
-export function useMultipleCardPrintings(cardNames: string[]) {
-  return useQueries({
-    queries: cardNames.map((name) => ({
-      queryKey: cardKeys.prints(name),
-      queryFn: () => fetchCardPrintings(name),
-      enabled: Boolean(name),
-      staleTime: Infinity,
-      cacheTime: 1000 * 60 * 60 * 24,
-    })),
+export function useAutocomplete(query: string) {
+  return useQuery({
+    queryKey: cardKeys.autocomplete(query),
+    queryFn: () => queryCardNames(query),
+    enabled: query.length >= 2,
+    staleTime: Infinity,
   });
 }

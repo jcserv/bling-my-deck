@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useLocalStorage } from "@/hooks/localStorage";
 import {
   ONE_DAY_IN_MILLISECONDS,
@@ -30,6 +29,7 @@ import {
 } from "@/types";
 
 import currency from "@/assets/currency.json";
+import { TypeaheadTextarea } from "./TypeaheadTextarea";
 
 const decklistRegex =
   /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
@@ -113,7 +113,7 @@ export const CartForm: React.FC = () => {
                   </p>
                 </div>
                 <FormControl>
-                  <Textarea
+                  <TypeaheadTextarea
                     placeholder="4 Lightning Bolt"
                     className="h-64 w-full resize-none"
                     {...field}

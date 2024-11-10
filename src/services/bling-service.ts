@@ -1,5 +1,4 @@
 import { fetchCardPrintings } from "@/api/scryfall/cache";
-import { ScryfallCard } from "@/api/scryfall/client";
 import {
   Submission,
   DeckPricingResult,
@@ -7,6 +6,7 @@ import {
   Card,
   Treatment,
 } from "@/types";
+import { ScryfallCard } from "@/types/scryfall";
 
 export class BlingService {
   constructor() {}
