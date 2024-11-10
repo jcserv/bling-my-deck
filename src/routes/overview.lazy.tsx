@@ -43,6 +43,9 @@ function Overview() {
         console.log(err);
         navigate({
           to: "/",
+          search: {
+            error: err,
+          }
         });
       });
   }, [submission]);
