@@ -60,7 +60,48 @@ const DeckViewer = ({
     });
   };
 
-  const handlePrintingChange = (cardName: string, treatment: string) => {
+  const handlePrintingChange = (cardName: string, newPrinting: CardOption) => {
+    console.log("prev", deck.filter((c) => c.cardName === cardName));
+    setDeck((prev) =>
+      prev.map((card) => {
+        if (card.cardName === cardName) {
+          return newPrinting;
+        }
+        return card;
+      })
+    );
+    console.log("new", deck.filter((c) => c.cardName === cardName));
+
+    if (selectedCard?.cardName === cardName) {
+      console.log("setting selected card to", newPrinting);
+      setSelectedCard(newPrinting);
+    }
+
+    if (deckResult) {
+      console.log("updating deck result");
+      const updatedDeck = {
+        ...deckResult,
+        bling: {
+          ...deckResult.bling,
+          [cardName]: newPrinting,
+        },
+      };
+
+      const newTotalPrice = Object.values(updatedDeck.bling).reduce(
+        (total, card) => {
+          const selectedTreatmentPrice =
+            card.treatments.find((t) => t.name === card.selectedTreatment)
+              ?.price || 0;
+          return total + selectedTreatmentPrice;
+        },
+        0
+      );
+
+      updatedDeck.totalPrice = newTotalPrice;
+    }
+  };
+
+  const handleTreatmentChange = (cardName: string, treatment: string) => {
     setDeck((prev) =>
       prev.map((card) => {
         if (card.cardName === cardName) {
@@ -70,7 +111,7 @@ const DeckViewer = ({
           };
         }
         return card;
-      }),
+      })
     );
 
     if (selectedCard?.cardName === cardName) {
@@ -80,7 +121,7 @@ const DeckViewer = ({
               ...prev,
               selectedTreatment: treatment as Treatment,
             }
-          : null,
+          : null
       );
     }
 
@@ -103,7 +144,7 @@ const DeckViewer = ({
               ?.price || 0;
           return total + selectedTreatmentPrice;
         },
-        0,
+        0
       );
 
       updatedDeck.totalPrice = newTotalPrice;
@@ -116,7 +157,15 @@ const DeckViewer = ({
       <div className="w-full md:w-[280px] p-4">
         <div className="sticky top-4 flex max-md:flex-row md:flex-col gap-4">
           <div className="max-md:w-1/2 w-full">
-            <CardDisplay selectedCard={selectedCard} />
+            <CardDisplay
+              selectedCard={selectedCard}
+              allPrintings={
+                selectedCard
+                  ? deckResult.cards[selectedCard.cardName]
+                  : undefined
+              }
+              onPrintingChange={handlePrintingChange}
+            />
           </div>
           <div className="max-md:w-1/2 w-full space-y-4 flex flex-col justify-center">
             <Card className="p-4">
@@ -128,7 +177,7 @@ const DeckViewer = ({
                   $
                   {selectedCard?.treatments
                     .filter(
-                      (t) => t.name === selectedCard?.selectedTreatment,
+                      (t) => t.name === selectedCard?.selectedTreatment
                     )[0]
                     ?.price?.toFixed(2)}{" "}
                   USD
@@ -139,7 +188,7 @@ const DeckViewer = ({
               <Card className="p-4">
                 <TreatmentSelect
                   card={selectedCard}
-                  onPrintingChange={handlePrintingChange}
+                  onPrintingChange={handleTreatmentChange}
                 />
               </Card>
             )}
@@ -193,7 +242,7 @@ const DeckViewer = ({
                   deckResult={deckResult}
                   setSelectedCard={setSelectedCard}
                 />
-              ),
+              )
           )}
         </div>
       </div>

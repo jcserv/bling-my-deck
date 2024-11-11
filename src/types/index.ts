@@ -69,6 +69,7 @@ export type Submission = {
   treatments: Treatment[];
   localCurrency: string;
 };
+
 export interface CardOption {
   id: string;
   cardName: string;
