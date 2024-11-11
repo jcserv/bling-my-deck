@@ -34,7 +34,7 @@ export class ScryfallClient {
 
   private async fetchWithRetry(
     url: string,
-    retries: number = 3
+    retries: number = 3,
   ): Promise<Response> {
     await this.waitForRateLimit();
 
@@ -93,5 +93,3 @@ export class ScryfallClient {
     return resp.data;
   }
 }
-
-

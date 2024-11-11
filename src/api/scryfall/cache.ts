@@ -3,7 +3,7 @@ import { scryfallClient } from "@/routes/__root";
 import { ScryfallCard } from "@/types/scryfall";
 
 export const fetchCardPrintings = async (
-  cardName: string
+  cardName: string,
 ): Promise<ScryfallCard[]> => {
   const cached = cardStore.state.cards[cardName];
   if (cached) {

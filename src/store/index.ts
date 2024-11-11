@@ -11,7 +11,7 @@ interface CardStore {
   // used for typeahead
   cardNameQueries: {
     [name: string]: string[];
-  }
+  };
 }
 
 const initialState: CardStore = {
@@ -44,7 +44,7 @@ export const cardActions = {
       cardNameQueries: {
         ...prev.cardNameQueries,
         [query]: cardNames,
-      }
+      },
     }));
   },
 

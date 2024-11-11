@@ -39,7 +39,7 @@ export const TypeaheadTextarea = React.forwardRef<
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newQuery = getCurrentLineQuery(
       e.target.value,
-      e.target.selectionStart
+      e.target.selectionStart,
     );
     setQuery(newQuery);
     setSelectedIndex(0);
@@ -90,7 +90,7 @@ export const TypeaheadTextarea = React.forwardRef<
       case "ArrowUp":
         e.preventDefault();
         setSelectedIndex(
-          (i) => (i - 1 + suggestions.length) % suggestions.length
+          (i) => (i - 1 + suggestions.length) % suggestions.length,
         );
         break;
       case "Enter":
@@ -156,7 +156,7 @@ export const TypeaheadTextarea = React.forwardRef<
                     "hover:bg-accent hover:text-accent-foreground",
                     "focus:bg-accent focus:text-accent-foreground",
                     index === selectedIndex &&
-                      "bg-accent text-accent-foreground"
+                      "bg-accent text-accent-foreground",
                   )}
                 >
                   {suggestion}
