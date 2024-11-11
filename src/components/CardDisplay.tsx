@@ -80,6 +80,7 @@ export const CardDisplay = ({
       {selectedCard && allPrintings && allPrintings.length > 1 && (
         <>
           <Button
+            aria-label="Click to view previous printing"
             variant="outline"
             size="icon"
             className="absolute left-2 top-1/2 -translate-y-1/2 bg-background"
@@ -88,6 +89,7 @@ export const CardDisplay = ({
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
+            aria-label="Click to view previous printing"
             variant="outline"
             size="icon"
             className="absolute right-2 top-1/2 -translate-y-1/2 bg-background"

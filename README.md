@@ -4,11 +4,21 @@
 
 bling-my-deck is a site that allows Magic: The Gathering players to find the most expensive version of their pet decks ✨
 
-## todo
+## features
+- View all printings for a card, and see how that affects the price
+- Typeahead autocomplete when inputting decklist
+- Mobile support
 
-- allow users to page through printings
+## installation
+
+1. Clone the latest code on the main branch
+2. Install dependencies
+   - `pnpm i`
+3. Run the web server!
+   - `pnpm dev`
+4. Navigate to http://localhost:5173 on your browser
 
 ## credits
 
-- [Moxfield](https://www.moxfield.com/)
 - [Scryfall API](https://scryfall.com/)
+- [Moxfield](https://www.moxfield.com/)
