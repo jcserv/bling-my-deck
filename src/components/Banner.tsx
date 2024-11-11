@@ -30,7 +30,7 @@ export const ErrorBanner = ({
   <Alert
     className={cn(
       "w-1/2 max-w-4xl bg-red-400 dark:bg-red-600 my-4 md:my-8 overflow-x-auto",
-      className
+      className,
     )}
   >
     <Info className="h-4 w-4" />

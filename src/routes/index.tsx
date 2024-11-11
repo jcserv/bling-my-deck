@@ -24,8 +24,8 @@ function Index() {
           <InfoBanner>
             <span>
               Enter the cards you want to bling out, and we&apos;ll show you all
-              of the most expensive printings available for each card, as well as
-              the total cost.
+              of the most expensive printings available for each card, as well
+              as the total cost.
             </span>
           </InfoBanner>
         ) : (

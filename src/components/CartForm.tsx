@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
@@ -31,7 +31,7 @@ import {
 } from "@/types";
 
 import currency from "@/assets/currency.json";
-import { exampleDecklist } from '@/assets/exampleDecklist';
+import { exampleDecklist } from "@/assets/exampleDecklist";
 
 const decklistRegex =
   /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
@@ -109,7 +109,9 @@ export const CartForm: React.FC = () => {
                     <FormLabel className="text-base">Decklist</FormLabel>
                     <p
                       className={`text-sm ml-2 ${
-                        numUniqueCards > 100 ? "text-red-500" : "text-muted-foreground"
+                        numUniqueCards > 100
+                          ? "text-red-500"
+                          : "text-muted-foreground"
                       }`}
                     >
                       ({numUniqueCards}/100 unique cards)
@@ -185,7 +187,10 @@ export const CartForm: React.FC = () => {
                                 )}
                                 onCheckedChange={(checked) => {
                                   return checked
-                                    ? field.onChange([...field.value, treatment])
+                                    ? field.onChange([
+                                        ...field.value,
+                                        treatment,
+                                      ])
                                     : field.onChange(
                                         field.value?.filter(
                                           (value) => value !== treatment,
@@ -210,10 +215,20 @@ export const CartForm: React.FC = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <Button variant="destructive" type="button" className="w-full" onClick={() => form.resetField('decklist')}>
+          <Button
+            variant="destructive"
+            type="button"
+            className="w-full"
+            onClick={() => form.resetField("decklist")}
+          >
             Clear
           </Button>
-          <Button variant="secondary" type="button" className="w-full" onClick={() => form.setValue('decklist', exampleDecklist)}>
+          <Button
+            variant="secondary"
+            type="button"
+            className="w-full"
+            onClick={() => form.setValue("decklist", exampleDecklist)}
+          >
             Use sample deck
           </Button>
           <Button type="submit" className="w-full">

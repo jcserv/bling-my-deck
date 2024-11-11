@@ -21,7 +21,7 @@ const TreatmentSelect = ({
 
   useEffect(() => {
     const selectedIndex = treatments.findIndex(
-      (t) => t.name === card.selectedTreatment
+      (t) => t.name === card.selectedTreatment,
     );
     if (selectedIndex !== -1) {
       setCurrentIndex(selectedIndex);
@@ -32,18 +32,18 @@ const TreatmentSelect = ({
     setCurrentIndex((prev) => (prev + 1) % treatments.length);
     onPrintingChange(
       card.cardName,
-      treatments[(currentIndex + 1) % treatments.length]?.name
+      treatments[(currentIndex + 1) % treatments.length]?.name,
     );
   };
 
   const handlePrevious = () => {
     setCurrentIndex(
-      (prev) => (prev - 1 + treatments.length) % treatments.length
+      (prev) => (prev - 1 + treatments.length) % treatments.length,
     );
     onPrintingChange(
       card.cardName,
       treatments[(currentIndex - 1 + treatments.length) % treatments.length]
-        ?.name
+        ?.name,
     );
   };
 

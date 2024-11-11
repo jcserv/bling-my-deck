@@ -70,7 +70,7 @@ const DeckViewer = ({
           };
         }
         return card;
-      })
+      }),
     );
 
     if (selectedCard?.cardName === cardName) {
@@ -80,7 +80,7 @@ const DeckViewer = ({
               ...prev,
               selectedTreatment: treatment as Treatment,
             }
-          : null
+          : null,
       );
     }
 
@@ -103,7 +103,7 @@ const DeckViewer = ({
               ?.price || 0;
           return total + selectedTreatmentPrice;
         },
-        0
+        0,
       );
 
       updatedDeck.totalPrice = newTotalPrice;
@@ -128,7 +128,7 @@ const DeckViewer = ({
                   $
                   {selectedCard?.treatments
                     .filter(
-                      (t) => t.name === selectedCard?.selectedTreatment
+                      (t) => t.name === selectedCard?.selectedTreatment,
                     )[0]
                     ?.price?.toFixed(2)}{" "}
                   USD
@@ -193,7 +193,7 @@ const DeckViewer = ({
                   deckResult={deckResult}
                   setSelectedCard={setSelectedCard}
                 />
-              )
+              ),
           )}
         </div>
       </div>

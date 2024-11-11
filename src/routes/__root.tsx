@@ -32,7 +32,7 @@ export const Route = createRootRoute({
         <ErrorBanner
           message="An unexpected error occurred. Please open a Github issue with the below error details."
           error={error.message}
-          className='h-1/3'
+          className="h-1/3"
         />
       </div>
       <Footer />

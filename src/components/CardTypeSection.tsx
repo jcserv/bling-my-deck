@@ -64,10 +64,10 @@ export const CardTypeSection = ({
       const aKey = a.includes("//") ? a.split("//")[0].trim() : a;
       const bKey = b.includes("//") ? b.split("//")[0].trim() : b;
       const aPrice = deckResult.bling[aKey]?.treatments.filter(
-        (t) => t.name === deckResult.bling[aKey]?.selectedTreatment
+        (t) => t.name === deckResult.bling[aKey]?.selectedTreatment,
       )[0]?.price;
       const bPrice = deckResult.bling[bKey]?.treatments.filter(
-        (t) => t.name === deckResult.bling[bKey]?.selectedTreatment
+        (t) => t.name === deckResult.bling[bKey]?.selectedTreatment,
       )[0]?.price;
       if (sortOrder === "asc") {
         return (aPrice ?? 0) - (bPrice ?? 0);
@@ -84,7 +84,7 @@ export const CardTypeSection = ({
       return `Click to sort cards under ${cardType} by price descending`;
     }
     return `Click to return cards under ${cardType} to default order`;
-  }
+  };
 
   return (
     <div className="break-inside-avoid-column mb-8">
@@ -124,13 +124,13 @@ export const CardTypeSection = ({
             ? cardName.split("//")[0].trim()
             : cardName;
           const selectedPrinting = Object.entries(deckResult.bling).filter(
-            ([key]) => key.startsWith(cardNameKey)
+            ([key]) => key.startsWith(cardNameKey),
           )[0]?.[1];
           if (!selectedPrinting) {
             console.log(
               "No printings found for ",
               cardName,
-              "please open an issue."
+              "please open an issue.",
             );
             return null;
           }
