@@ -7,7 +7,8 @@ import { CardDisplay } from "@/components/CardDisplay";
 import { CardTypeSection } from "@/components/CardTypeSection";
 import { useToast } from "@/hooks/use-toast";
 import { toMoxfield } from "@/lib/decklist";
-import { DeckPricingResult, CardOption, CardType } from "@/types";
+import { DeckPricingResult, CardOption, CardType, Treatment } from "@/types";
+import TreatmentSelect from "./TreatmentSelect";
 
 const DeckViewer = ({
   deckResult,
@@ -59,6 +60,56 @@ const DeckViewer = ({
     });
   };
 
+  const handlePrintingChange = (cardName: string, treatment: string) => {
+    setDeck((prev) =>
+      prev.map((card) => {
+        if (card.cardName === cardName) {
+          return {
+            ...card,
+            selectedTreatment: treatment as Treatment,
+          };
+        }
+        return card;
+      })
+    );
+
+    if (selectedCard?.cardName === cardName) {
+      setSelectedCard((prev) =>
+        prev
+          ? {
+              ...prev,
+              selectedTreatment: treatment as Treatment,
+            }
+          : null
+      );
+    }
+
+    if (deckResult) {
+      const updatedDeck = {
+        ...deckResult,
+        bling: {
+          ...deckResult.bling,
+          [cardName]: {
+            ...deckResult.bling[cardName],
+            selectedTreatment: treatment,
+          },
+        },
+      };
+
+      const newTotalPrice = Object.values(updatedDeck.bling).reduce(
+        (total, card) => {
+          const selectedTreatmentPrice =
+            card.treatments.find((t) => t.name === card.selectedTreatment)
+              ?.price || 0;
+          return total + selectedTreatmentPrice;
+        },
+        0
+      );
+
+      updatedDeck.totalPrice = newTotalPrice;
+    }
+  };
+
   if (!deckResult) return null;
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
@@ -76,12 +127,22 @@ const DeckViewer = ({
                 <span className="font-semibold">
                   $
                   {selectedCard?.treatments
-                    .filter((t) => t.name === selectedCard?.selectedTreatment)[0]
+                    .filter(
+                      (t) => t.name === selectedCard?.selectedTreatment
+                    )[0]
                     ?.price?.toFixed(2)}{" "}
                   USD
                 </span>
               </div>
             </Card>
+            {selectedCard && (
+              <Card className="p-4">
+                <TreatmentSelect
+                  card={selectedCard}
+                  onPrintingChange={handlePrintingChange}
+                />
+              </Card>
+            )}
             <Card className="p-4 space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -96,7 +157,11 @@ const DeckViewer = ({
                   Some prices are unavailable
                 </div>
               )}
-              <Button className="w-full text-xs sm:text-sm whitespace-normal h-auto py-2" onClick={copyDeckList} variant="outline">
+              <Button
+                className="w-full text-xs sm:text-sm whitespace-normal h-auto py-2"
+                onClick={copyDeckList}
+                variant="outline"
+              >
                 <CopyIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
                 Copy Decklist (Moxfield)
               </Button>
@@ -128,7 +193,7 @@ const DeckViewer = ({
                   deckResult={deckResult}
                   setSelectedCard={setSelectedCard}
                 />
-              ),
+              )
           )}
         </div>
       </div>
