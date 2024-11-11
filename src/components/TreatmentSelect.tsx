@@ -84,7 +84,7 @@ const TreatmentSelect = ({
             value={treatments[currentIndex]?.name}
             onValueChange={handleSelectChange}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="Select finish" />
             </SelectTrigger>
             <SelectContent>
@@ -95,7 +95,6 @@ const TreatmentSelect = ({
               ))}
             </SelectContent>
           </Select>
-
           <span className="text-sm text-gray-500">
             {currentIndex + 1} / {treatments.length}
           </span>
