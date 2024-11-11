@@ -63,11 +63,11 @@ export const CardTypeSection = ({
     return cardNames.slice().sort((a, b) => {
       const aKey = a.includes("//") ? a.split("//")[0].trim() : a;
       const bKey = b.includes("//") ? b.split("//")[0].trim() : b;
-      const aPrice = deckResult.bling[aKey].treatments.filter(
-        (t) => t.name === deckResult.bling[aKey].selectedTreatment
+      const aPrice = deckResult.bling[aKey]?.treatments.filter(
+        (t) => t.name === deckResult.bling[aKey]?.selectedTreatment
       )[0]?.price;
-      const bPrice = deckResult.bling[bKey].treatments.filter(
-        (t) => t.name === deckResult.bling[bKey].selectedTreatment
+      const bPrice = deckResult.bling[bKey]?.treatments.filter(
+        (t) => t.name === deckResult.bling[bKey]?.selectedTreatment
       )[0]?.price;
       if (sortOrder === "asc") {
         return (aPrice ?? 0) - (bPrice ?? 0);
