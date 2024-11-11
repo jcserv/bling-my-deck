@@ -1,14 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Info } from "lucide-react";
 
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { CartForm } from "@/components/CartForm";
+import { ErrorBanner, InfoBanner } from "@/components/Banner";
 
 type Params = {
   error: string;
@@ -28,36 +21,18 @@ function Index() {
     <section className="p-2 md:p-4">
       <div className="min-h-[80vh] w-full flex flex-col items-center">
         {!error ? (
-          <Alert className="w-1/2 max-w-4xl bg-blue-400 dark:bg-blue-600 my-4 md:my-8">
-            <Info className="h-4 w-4" />
-            <AlertTitle>Info</AlertTitle>
-            <AlertDescription className="space-y-1">
-              <p>
-                Enter the cards you want to bling out, and we&apos;ll show you
-                all of the most expensive printings available for each card, as
-                well as the total cost.
-              </p>
-            </AlertDescription>
-          </Alert>
+          <InfoBanner>
+            <span>
+              Enter the cards you want to bling out, and we&apos;ll show you all
+              of the most expensive printings available for each card, as well as
+              the total cost.
+            </span>
+          </InfoBanner>
         ) : (
-          <Alert className="w-1/2 max-w-4xl bg-red-400 dark:bg-red-600 my-4 md:my-8 overflow-x-auto">
-            <Info className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription className="space-y-1">
-              <p>
-                Unable to retrieve printings for a card, please try again and
-                ensure the name matches exactly.
-              </p>
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>Click to View Details</AccordionTrigger>
-                  <AccordionContent>
-                    <pre>{error}</pre>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </AlertDescription>
-          </Alert>
+          <ErrorBanner
+            message="Unable to retrieve printings for a card, please try again and ensure the name matches exactly."
+            error={error}
+          />
         )}
         <CartForm />
       </div>
