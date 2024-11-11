@@ -23,5 +23,12 @@ export const Route = createRootRoute({
       <SpeedInsights />
     </QueryClientProvider>
   ),
-  errorComponent: ({ error }) => <div>{error.message}</div>,
+  errorComponent: ({ error }) => (
+    <>
+      <Header />
+      <hr />
+      <p>{error.message}</p>
+      <Footer />
+    </>
+  ),
 });

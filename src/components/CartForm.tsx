@@ -1,3 +1,4 @@
+import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
@@ -20,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TypeaheadTextarea } from "@/components/TypeaheadTextarea";
 import { useLocalStorage } from "@/hooks/localStorage";
 import {
   ONE_DAY_IN_MILLISECONDS,
@@ -29,7 +31,7 @@ import {
 } from "@/types";
 
 import currency from "@/assets/currency.json";
-import { TypeaheadTextarea } from "./TypeaheadTextarea";
+import { exampleDecklist } from '@/assets/exampleDecklist';
 
 const decklistRegex =
   /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
@@ -75,7 +77,7 @@ export const CartForm: React.FC = () => {
     },
   });
 
-  const numCards = form
+  const numUniqueCards = form
     .watch("decklist")
     .split("\n")
     .filter((x) => x).length;
@@ -94,116 +96,126 @@ export const CartForm: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full max-w-4xl flex flex-col md:flex-row gap-4 md:gap-8 p-4"
+        className="w-full max-w-4xl flex flex-col gap-4 p-4"
       >
-        <div className="flex-grow min-w-0">
-          <FormField
-            control={form.control}
-            name="decklist"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row items-end">
-                  <FormLabel className="text-base">Decklist</FormLabel>
-                  <p
-                    className={`text-sm ml-2 ${
-                      numCards > 100 ? "text-red-500" : "text-muted-foreground"
-                    }`}
-                  >
-                    ({numCards}/100 cards)
-                  </p>
-                </div>
-                <FormControl>
-                  <TypeaheadTextarea
-                    placeholder="4 Lightning Bolt"
-                    className="h-64 w-full resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="w-full md:w-64 space-y-6">
-          <FormField
-            control={form.control}
-            name="localCurrency"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base">Currency</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+        <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+          <div className="flex-grow min-w-0">
+            <FormField
+              control={form.control}
+              name="decklist"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-row items-end">
+                    <FormLabel className="text-base">Decklist</FormLabel>
+                    <p
+                      className={`text-sm ml-2 ${
+                        numUniqueCards > 100 ? "text-red-500" : "text-muted-foreground"
+                      }`}
+                    >
+                      ({numUniqueCards}/100 unique cards)
+                    </p>
+                  </div>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your local currency" />
-                    </SelectTrigger>
+                    <TypeaheadTextarea
+                      placeholder="4 Lightning Bolt"
+                      className="h-64 w-full resize-none"
+                      {...field}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {currency.map((currency) => (
-                      <SelectItem
-                        key={currency.value}
-                        value={currency.value}
-                        disabled={currency.disabled}
-                      >
-                        {currency.emoji} {currency.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="treatments"
-            render={() => (
-              <FormItem>
-                <div>
-                  <FormLabel className="text-base">Finishes</FormLabel>
-                </div>
-                {AllTreatments.map((treatment) => (
-                  <FormField
-                    key={treatment}
-                    control={form.control}
-                    name="treatments"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={treatment}
-                          className="flex flex-row items-start space-x-2"
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="w-full md:w-64 space-y-6">
+            <FormField
+              control={form.control}
+              name="localCurrency"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base">Currency</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your local currency" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {currency.map((currency) => (
+                        <SelectItem
+                          key={currency.value}
+                          value={currency.value}
+                          disabled={currency.disabled}
                         >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(
-                                treatment as Treatment,
-                              )}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, treatment])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== treatment,
-                                      ),
-                                    );
-                              }}
-                              className="mt-2"
-                            />
-                          </FormControl>
-                          <FormLabel className="text-sm font-normal leading-none">
-                            {treatment}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                          {currency.emoji} {currency.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="treatments"
+              render={() => (
+                <FormItem>
+                  <div>
+                    <FormLabel className="text-base">Finishes</FormLabel>
+                  </div>
+                  {AllTreatments.map((treatment) => (
+                    <FormField
+                      key={treatment}
+                      control={form.control}
+                      name="treatments"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={treatment}
+                            className="flex flex-row items-start space-x-2"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(
+                                  treatment as Treatment,
+                                )}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([...field.value, treatment])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== treatment,
+                                        ),
+                                      );
+                                }}
+                                className="mt-2"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal leading-none">
+                              {treatment}
+                            </FormLabel>
+                          </FormItem>
+                        );
+                      }}
+                    />
+                  ))}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          <Button variant="destructive" type="button" className="w-full" onClick={() => form.resetField('decklist')}>
+            Clear
+          </Button>
+          <Button variant="secondary" type="button" className="w-full" onClick={() => form.setValue('decklist', exampleDecklist)}>
+            Use sample deck
+          </Button>
           <Button type="submit" className="w-full">
             Submit
           </Button>
