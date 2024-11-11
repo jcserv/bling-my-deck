@@ -15,7 +15,9 @@ export const TypeaheadTextarea = React.forwardRef<
 >(({ className, onChange, value, ...props }, forwardedRef) => {
   const [query, setQuery] = React.useState("");
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [isOpen, setIsOpen] = React.useState(false);
   const localRef = React.useRef<HTMLTextAreaElement | null>(null);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   const textareaRef = React.useMemo(() => {
     return (node: HTMLTextAreaElement | null) => {
@@ -30,6 +32,24 @@ export const TypeaheadTextarea = React.forwardRef<
 
   const { data: suggestions, isLoading } = useAutocomplete(query);
 
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        !localRef.current?.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+        setQuery("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const getCurrentLineQuery = (value: string, selectionStart: number) => {
     const lines = value.slice(0, selectionStart).split("\n");
     const currentLine = lines[lines.length - 1];
@@ -43,6 +63,7 @@ export const TypeaheadTextarea = React.forwardRef<
     );
     setQuery(newQuery);
     setSelectedIndex(0);
+    setIsOpen(true);
     onChange?.(e);
   };
 
@@ -76,6 +97,7 @@ export const TypeaheadTextarea = React.forwardRef<
 
     setQuery("");
     setSelectedIndex(0);
+    setIsOpen(false);
     textarea.focus();
   };
 
@@ -98,6 +120,11 @@ export const TypeaheadTextarea = React.forwardRef<
           e.preventDefault();
           handleSelect(suggestions[selectedIndex]);
         }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setIsOpen(false);
+        setQuery("");
         break;
     }
   };
@@ -129,11 +156,13 @@ export const TypeaheadTextarea = React.forwardRef<
         className={className}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
+        onFocus={() => setIsOpen(true)}
         value={value}
         {...props}
       />
-      {query.length >= 2 && (
+      {isOpen && query.length >= 2 && (
         <div
+          ref={dropdownRef}
           className="absolute z-50 min-w-[200px] max-w-[400px] rounded-md border bg-popover p-1 shadow-md"
           style={getDropdownPosition()}
         >
