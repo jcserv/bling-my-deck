@@ -1,3 +1,7 @@
+import { useMemo, useState } from "react";
+import { ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { CardOption, CardType, DeckPricingResult, Treatment } from "@/types";
 
 interface CardTypeSectionProps {
@@ -42,51 +46,98 @@ const cardTypes: Record<CardType, { label: string; emoji: string }> = {
   },
 };
 
+type SortOrder = "none" | "asc" | "desc";
+
 export const CardTypeSection = ({
   cardType,
   cardNames,
   deckResult,
   setSelectedCard,
-}: CardTypeSectionProps) => (
-  <div className="break-inside-avoid-column mb-8">
-    <div className="flex items-center gap-2 mb-2">
-      <span className="text-lg">
-        {cardTypes[cardType] ? cardTypes[cardType].emoji : ""}
-      </span>
-      <h2 className="text-lg font-semibold">
-        {cardType} ({cardNames.length})
-      </h2>
-    </div>
-    <div className="space-y-0.5">
-      {cardNames.map((cardName) => {
-        const cardNameKey = cardName.includes("//")
-          ? cardName.split("//")[0].trim()
-          : cardName;
-        const selectedPrinting = Object.entries(deckResult.bling).filter(
-          ([key]) => key.startsWith(cardNameKey),
-        )[0]?.[1];
-        if (!selectedPrinting) {
-          console.log(
-            "No printings found for ",
-            cardName,
-            "please open an issue.",
+}: CardTypeSectionProps) => {
+  const [sortOrder, setSortOrder] = useState<SortOrder>("none");
+
+  const sortedCardNames = useMemo(() => {
+    if (sortOrder === "none") {
+      return cardNames;
+    }
+    return cardNames.slice().sort((a, b) => {
+      const aKey = a.includes("//") ? a.split("//")[0].trim() : a;
+      const bKey = b.includes("//") ? b.split("//")[0].trim() : b;
+      const aPrice = deckResult.bling[aKey].treatments.filter(
+        (t) => t.name === deckResult.bling[aKey].selectedTreatment
+      )[0]?.price;
+      const bPrice = deckResult.bling[bKey].treatments.filter(
+        (t) => t.name === deckResult.bling[bKey].selectedTreatment
+      )[0]?.price;
+      if (sortOrder === "asc") {
+        return (aPrice ?? 0) - (bPrice ?? 0);
+      }
+      return (bPrice ?? 0) - (aPrice ?? 0);
+    });
+  }, [cardNames, deckResult, sortOrder]);
+
+  return (
+    <div className="break-inside-avoid-column mb-8">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-lg">
+          {cardTypes[cardType] ? cardTypes[cardType].emoji : ""}
+        </span>
+        <h2 className="text-lg font-semibold">
+          {cardType} ({cardNames.length})
+        </h2>
+        {cardNames.length > 1 && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              if (sortOrder === "none") {
+                setSortOrder("asc");
+                return;
+              }
+              if (sortOrder === "asc") {
+                setSortOrder("desc");
+                return;
+              }
+              setSortOrder("none");
+            }}
+          >
+            {sortOrder === "none" && <ArrowUpDown />}
+            {sortOrder === "asc" && <SortAsc />}
+            {sortOrder === "desc" && <SortDesc />}
+          </Button>
+        )}
+      </div>
+      <div className="space-y-0.5">
+        {sortedCardNames.map((cardName) => {
+          const cardNameKey = cardName.includes("//")
+            ? cardName.split("//")[0].trim()
+            : cardName;
+          const selectedPrinting = Object.entries(deckResult.bling).filter(
+            ([key]) => key.startsWith(cardNameKey)
+          )[0]?.[1];
+          if (!selectedPrinting) {
+            console.log(
+              "No printings found for ",
+              cardName,
+              "please open an issue."
+            );
+            return null;
+          }
+          const quantity = selectedPrinting.quantity;
+          return (
+            <CardItem
+              key={cardName}
+              cardName={cardName}
+              quantity={quantity}
+              selectedPrinting={selectedPrinting}
+              setSelectedCard={setSelectedCard}
+            />
           );
-          return null;
-        }
-        const quantity = selectedPrinting.quantity;
-        return (
-          <CardItem
-            key={cardName}
-            cardName={cardName}
-            quantity={quantity}
-            selectedPrinting={selectedPrinting}
-            setSelectedCard={setSelectedCard}
-          />
-        );
-      })}
+        })}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 interface CardItemProps {
   cardName: string;
