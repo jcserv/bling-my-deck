@@ -61,33 +61,32 @@ const DeckViewer = ({
   };
 
   const handlePrintingChange = (cardName: string, newPrinting: CardOption) => {
-    console.log("prev", deck.filter((c) => c.cardName === cardName));
+    const newPrintingWithTreatment = {
+      ...newPrinting,
+      selectedTreatment: (newPrinting.treatments.some(
+        (t) => t.name === selectedCard?.selectedTreatment
+      )
+        ? selectedCard?.selectedTreatment
+        : newPrinting.treatments[0]?.name) as Treatment,
+    };
+
     setDeck((prev) =>
       prev.map((card) => {
         if (card.cardName === cardName) {
-          return newPrinting;
+          return newPrintingWithTreatment;
         }
         return card;
       })
     );
-    console.log("new", deck.filter((c) => c.cardName === cardName));
 
     if (selectedCard?.cardName === cardName) {
-      console.log("setting selected card to", newPrinting);
-      setSelectedCard(newPrinting);
+      setSelectedCard(newPrintingWithTreatment);
     }
 
     if (deckResult) {
-      console.log("updating deck result");
-      const updatedDeck = {
-        ...deckResult,
-        bling: {
-          ...deckResult.bling,
-          [cardName]: newPrinting,
-        },
-      };
+      deckResult.bling[cardName] = newPrintingWithTreatment;
 
-      const newTotalPrice = Object.values(updatedDeck.bling).reduce(
+      const newTotalPrice = Object.values(deckResult.bling).reduce(
         (total, card) => {
           const selectedTreatmentPrice =
             card.treatments.find((t) => t.name === card.selectedTreatment)
@@ -97,7 +96,7 @@ const DeckViewer = ({
         0
       );
 
-      updatedDeck.totalPrice = newTotalPrice;
+      deckResult.totalPrice = newTotalPrice;
     }
   };
 
@@ -126,18 +125,13 @@ const DeckViewer = ({
     }
 
     if (deckResult) {
-      const updatedDeck = {
-        ...deckResult,
-        bling: {
-          ...deckResult.bling,
-          [cardName]: {
-            ...deckResult.bling[cardName],
-            selectedTreatment: treatment,
-          },
-        },
+      const updatedCard = {
+        ...deckResult.bling[cardName],
+        selectedTreatment: treatment as Treatment,
       };
 
-      const newTotalPrice = Object.values(updatedDeck.bling).reduce(
+      deckResult.bling[cardName] = updatedCard;
+      const newTotalPrice = Object.values(deckResult.bling).reduce(
         (total, card) => {
           const selectedTreatmentPrice =
             card.treatments.find((t) => t.name === card.selectedTreatment)
@@ -146,8 +140,37 @@ const DeckViewer = ({
         },
         0
       );
+      deckResult.totalPrice = newTotalPrice;
+    }
+  };
 
-      updatedDeck.totalPrice = newTotalPrice;
+  const validateAndGetCard = (card: CardOption): CardOption => {
+    if (
+      !card.selectedTreatment ||
+      !card.treatments.find(
+        (t) => t.name === card.selectedTreatment && t.available
+      )
+    ) {
+      const firstAvailableTreatment = card.treatments.find((t) => t.available);
+      return {
+        ...card,
+        selectedTreatment: firstAvailableTreatment?.name as Treatment,
+      };
+    }
+    return card;
+  };
+
+  const handleCardSelect = (card: CardOption | null) => {
+    if (!card) {
+      setSelectedCard(null);
+      return;
+    }
+
+    const validatedCard = validateAndGetCard(card);
+    setSelectedCard(validatedCard);
+
+    if (validatedCard.selectedTreatment !== card.selectedTreatment) {
+      handleTreatmentChange(card.cardName, validatedCard.selectedTreatment!);
     }
   };
 
@@ -175,11 +198,11 @@ const DeckViewer = ({
                 </span>
                 <span className="font-semibold">
                   $
-                  {selectedCard?.treatments
-                    .filter(
-                      (t) => t.name === selectedCard?.selectedTreatment
-                    )[0]
-                    ?.price?.toFixed(2)}{" "}
+                  {(selectedCard &&
+                    selectedCard.treatments
+                      ?.find((t) => t.name === selectedCard.selectedTreatment)
+                      ?.price?.toFixed(2)) ??
+                    "0.00"}{" "}
                   USD
                 </span>
               </div>
@@ -240,7 +263,7 @@ const DeckViewer = ({
                   cardType={type as CardType}
                   cardNames={cardNames}
                   deckResult={deckResult}
-                  setSelectedCard={setSelectedCard}
+                  setSelectedCard={handleCardSelect}
                 />
               )
           )}

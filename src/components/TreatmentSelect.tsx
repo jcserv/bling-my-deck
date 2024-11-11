@@ -17,7 +17,7 @@ const TreatmentSelect = ({
   className?: string;
 }) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const treatments = card.treatments.filter((t) => !t.price);
+  const treatments = card.treatments.filter((t) => t.price);
 
   useEffect(() => {
     const selectedIndex = treatments.findIndex(
@@ -81,11 +81,11 @@ const TreatmentSelect = ({
       <div className="flex items-center justify-center">
         <div className="flex flex-col items-center gap-1">
           <Select
-            value={treatments[currentIndex].name}
+            value={treatments[currentIndex]?.name}
             onValueChange={handleSelectChange}
           >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select printing" />
+              <SelectValue placeholder="Select finish" />
             </SelectTrigger>
             <SelectContent>
               {treatments.map((treatment) => (
