@@ -7,7 +7,6 @@ bling-my-deck is a site that allows Magic: The Gathering players to find the mos
 ## todo
 
 - allow users to page through printings
-- add typeahead
 
 ## credits
 
