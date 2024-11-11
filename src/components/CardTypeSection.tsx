@@ -76,6 +76,16 @@ export const CardTypeSection = ({
     });
   }, [cardNames, deckResult, sortOrder]);
 
+  const getSortButtonAltTest = () => {
+    if (sortOrder === "none") {
+      return `Click to sort cards under ${cardType} by price ascending`;
+    }
+    if (sortOrder === "asc") {
+      return `Click to sort cards under ${cardType} by price descending`;
+    }
+    return `Click to return cards under ${cardType} to default order`;
+  }
+
   return (
     <div className="break-inside-avoid-column mb-8">
       <div className="flex items-center gap-2 mb-2">
@@ -89,6 +99,7 @@ export const CardTypeSection = ({
           <Button
             variant="ghost"
             size="icon"
+            aria-label={getSortButtonAltTest()}
             onClick={() => {
               if (sortOrder === "none") {
                 setSortOrder("asc");
