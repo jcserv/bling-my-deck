@@ -61,70 +61,76 @@ const DeckViewer = ({
 
   if (!deckResult) return null;
   return (
-    <div className="flex gap-4 p-4">
-      <div className="w-[280px]">
-        <div className="sticky top-4 space-y-4">
-          <CardDisplay selectedCard={selectedCard} />
-          <Card className="p-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                Price:
-              </span>
-              <span className="font-semibold">
-                $
-                {selectedCard?.treatments
-                  .filter((t) => t.name === selectedCard?.selectedTreatment)[0]
-                  ?.price?.toFixed(2)}{" "}
-                USD
-              </span>
-            </div>
-          </Card>
-          <Card className="p-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                Total Price:
-              </span>
-              <span className="font-semibold">
-                ${deckResult.totalPrice.toFixed(2)} USD
-              </span>
-            </div>
-            {deckResult.missingPrices && (
-              <div className="text-sm text-yellow-600">
-                Some prices are unavailable
-              </div>
-            )}
-            <Button className="w-full" onClick={copyDeckList} variant="outline">
-              <CopyIcon className="w-4 h-4 mr-2" />
-              Copy Decklist (Moxfield)
-            </Button>
-          </Card>
-          {deckResult.stats.numMissingCards > 0 && (
+    <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="w-full md:w-[280px] p-4">
+        <div className="sticky top-4 flex max-md:flex-row md:flex-col gap-4">
+          <div className="max-md:w-1/2 w-full">
+            <CardDisplay selectedCard={selectedCard} />
+          </div>
+          <div className="max-md:w-1/2 w-full space-y-4 flex flex-col justify-center">
             <Card className="p-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Missing cards:
+                  Price:
                 </span>
                 <span className="font-semibold">
-                  {deckResult.stats.numMissingCards}
+                  $
+                  {selectedCard?.treatments
+                    .filter((t) => t.name === selectedCard?.selectedTreatment)[0]
+                    ?.price?.toFixed(2)}{" "}
+                  USD
                 </span>
               </div>
             </Card>
-          )}
+            <Card className="p-4 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Total Price:
+                </span>
+                <span className="font-semibold">
+                  ${deckResult.totalPrice.toFixed(2)} USD
+                </span>
+              </div>
+              {deckResult.missingPrices && (
+                <div className="text-sm text-yellow-600">
+                  Some prices are unavailable
+                </div>
+              )}
+              <Button className="w-full text-xs sm:text-sm whitespace-normal h-auto py-2" onClick={copyDeckList} variant="outline">
+                <CopyIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                Copy Decklist (Moxfield)
+              </Button>
+            </Card>
+            {deckResult.stats.numMissingCards > 0 && (
+              <Card className="p-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    Missing cards:
+                  </span>
+                  <span className="font-semibold">
+                    {deckResult.stats.numMissingCards}
+                  </span>
+                </div>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
-      <div className="flex-1 columns-[250px] gap-4">
-        {Object.entries(groupedCards).map(
-          ([type, cardNames]) =>
-            cardNames.length > 0 && (
-              <CardTypeSection
-                key={type}
-                cardType={type as CardType}
-                cardNames={cardNames}
-                deckResult={deckResult}
-                setSelectedCard={setSelectedCard}
-              />
-            ),
-        )}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="columns-1 md:columns-[250px] gap-4">
+          {Object.entries(groupedCards).map(
+            ([type, cardNames]) =>
+              cardNames.length > 0 && (
+                <CardTypeSection
+                  key={type}
+                  cardType={type as CardType}
+                  cardNames={cardNames}
+                  deckResult={deckResult}
+                  setSelectedCard={setSelectedCard}
+                />
+              ),
+          )}
+        </div>
       </div>
     </div>
   );
