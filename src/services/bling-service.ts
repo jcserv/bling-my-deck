@@ -53,16 +53,14 @@ export class BlingService {
           !submissionCard.collectorNumber ||
           printing.collector_number === submissionCard.collectorNumber,
       )
-      .map((printing) => ({
+      .map((printing: ScryfallCard) => ({
         id: printing.id,
         cardName: printing.name,
         cardType: this.parseMainCardType(printing.type_line),
         setName: printing.set_name,
         setCode: printing.set,
         collectorNumber: printing.collector_number,
-        image: printing.card_faces
-          ? printing.card_faces[0].image_uris?.normal
-          : printing.image_uris?.normal,
+        image: this.parseCardImage(printing),
         quantity: submissionCard.quantity,
         requestedSet: submissionCard.set,
         requestedCollectorNumber: submissionCard.collectorNumber,
@@ -93,6 +91,14 @@ export class BlingService {
     if (type_line.includes("Sorcery")) return "Sorcery";
     if (type_line.includes("Instant")) return "Instant";
     return "";
+  }
+
+  private parseCardImage(card: ScryfallCard): string | undefined {
+    if (!card.card_faces) return card.image_uris?.normal;
+    if (card.card_faces && card.card_faces[0].image_uris) {
+      return card.card_faces[0].image_uris.normal;
+    }
+    return card.image_uris?.normal;
   }
 
   private getPriceForTreatment(
