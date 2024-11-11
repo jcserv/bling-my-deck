@@ -170,7 +170,7 @@ const DeckViewer = ({
 
     const validatedCard = validateAndGetCard(card);
     setSelectedCard(validatedCard);
-    
+
     if (validatedCard.selectedTreatment !== card.selectedTreatment) {
       handleTreatmentChange(card.cardName, validatedCard.selectedTreatment!);
     }
@@ -186,6 +186,7 @@ const DeckViewer = ({
   };
 
   if (!deckResult) return null;
+
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
       <div className="w-full md:w-[280px] p-4">
@@ -195,7 +196,8 @@ const DeckViewer = ({
               selectedCard={selectedCard}
               allPrintings={
                 selectedCard
-                  ? deckResult.cards[selectedCard.cardName]
+                  ? (deckResult.cards[selectedCard.cardName] ??
+                    deckResult.cards[selectedCard.cardName.split(" // ")[0]])
                   : undefined
               }
               onPrintingChange={handlePrintingChange}

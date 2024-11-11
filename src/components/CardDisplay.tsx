@@ -23,9 +23,7 @@ export const CardDisplay = ({ selectedCard, allPrintings, onPrintingChange }: Ca
   const handlePrevious = () => {
     if (!selectedCard || !allPrintings || !onPrintingChange) return;
     
-    const newIndex = currentIndex <= 0 ? allPrintings.length - 1 : currentIndex - 1;
-    console.log(`Moving from index ${currentIndex} to ${newIndex}`);
-    
+    const newIndex = currentIndex <= 0 ? allPrintings.length - 1 : currentIndex - 1;    
     onPrintingChange(selectedCard.cardName, allPrintings[newIndex]);
     setCurrentIndex(newIndex);
   };
@@ -33,9 +31,7 @@ export const CardDisplay = ({ selectedCard, allPrintings, onPrintingChange }: Ca
   const handleNext = () => {
     if (!selectedCard || !allPrintings || !onPrintingChange) return;
     
-    const newIndex = currentIndex >= allPrintings.length - 1 ? 0 : currentIndex + 1;
-    console.log(`Moving from index ${currentIndex} to ${newIndex}`);
-    
+    const newIndex = currentIndex >= allPrintings.length - 1 ? 0 : currentIndex + 1;    
     onPrintingChange(selectedCard.cardName, allPrintings[newIndex]);
     setCurrentIndex(newIndex);
   };
