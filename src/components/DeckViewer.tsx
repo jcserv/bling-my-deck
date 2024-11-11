@@ -66,7 +66,7 @@ const DeckViewer = ({
     const newPrintingWithTreatment = {
       ...newPrinting,
       selectedTreatment: (newPrinting.treatments.some(
-        (t) => t.name === selectedCard?.selectedTreatment
+        (t) => t.name === selectedCard?.selectedTreatment,
       )
         ? selectedCard?.selectedTreatment
         : newPrinting.treatments[0]?.name) as Treatment,
@@ -78,7 +78,7 @@ const DeckViewer = ({
           return newPrintingWithTreatment;
         }
         return card;
-      })
+      }),
     );
 
     if (selectedCard?.cardName === cardName) {
@@ -95,7 +95,7 @@ const DeckViewer = ({
               ?.price || 0;
           return total + selectedTreatmentPrice;
         },
-        0
+        0,
       );
 
       deckResult.totalPrice = newTotalPrice;
@@ -112,7 +112,7 @@ const DeckViewer = ({
           };
         }
         return card;
-      })
+      }),
     );
 
     if (selectedCard?.cardName === cardName) {
@@ -122,7 +122,7 @@ const DeckViewer = ({
               ...prev,
               selectedTreatment: treatment as Treatment,
             }
-          : null
+          : null,
       );
     }
 
@@ -140,7 +140,7 @@ const DeckViewer = ({
               ?.price || 0;
           return total + selectedTreatmentPrice;
         },
-        0
+        0,
       );
       deckResult.totalPrice = newTotalPrice;
     }
@@ -150,7 +150,7 @@ const DeckViewer = ({
     if (
       !card.selectedTreatment ||
       !card.treatments.find(
-        (t) => t.name === card.selectedTreatment && t.available
+        (t) => t.name === card.selectedTreatment && t.available,
       )
     ) {
       const firstAvailableTreatment = card.treatments.find((t) => t.available);
@@ -280,7 +280,7 @@ const DeckViewer = ({
                   lockedCard={lockedCard}
                   setSelectedCard={handleCardSelect}
                 />
-              )
+              ),
           )}
         </div>
       </div>

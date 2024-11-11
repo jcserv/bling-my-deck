@@ -1,5 +1,5 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CardOption, Treatment } from "@/types";
@@ -10,28 +10,36 @@ interface CardDisplayProps {
   onPrintingChange?: (cardName: string, newPrinting: CardOption) => void;
 }
 
-export const CardDisplay = ({ selectedCard, allPrintings, onPrintingChange }: CardDisplayProps) => {
+export const CardDisplay = ({
+  selectedCard,
+  allPrintings,
+  onPrintingChange,
+}: CardDisplayProps) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
   React.useEffect(() => {
     if (allPrintings?.length && selectedCard) {
-      const index = allPrintings.findIndex(card => card.id === selectedCard.id);
+      const index = allPrintings.findIndex(
+        (card) => card.id === selectedCard.id,
+      );
       setCurrentIndex(index !== -1 ? index : 0);
     }
   }, [selectedCard?.id, allPrintings]);
 
   const handlePrevious = () => {
     if (!selectedCard || !allPrintings || !onPrintingChange) return;
-    
-    const newIndex = currentIndex <= 0 ? allPrintings.length - 1 : currentIndex - 1;    
+
+    const newIndex =
+      currentIndex <= 0 ? allPrintings.length - 1 : currentIndex - 1;
     onPrintingChange(selectedCard.cardName, allPrintings[newIndex]);
     setCurrentIndex(newIndex);
   };
 
   const handleNext = () => {
     if (!selectedCard || !allPrintings || !onPrintingChange) return;
-    
-    const newIndex = currentIndex >= allPrintings.length - 1 ? 0 : currentIndex + 1;    
+
+    const newIndex =
+      currentIndex >= allPrintings.length - 1 ? 0 : currentIndex + 1;
     onPrintingChange(selectedCard.cardName, allPrintings[newIndex]);
     setCurrentIndex(newIndex);
   };
@@ -69,7 +77,6 @@ export const CardDisplay = ({ selectedCard, allPrintings, onPrintingChange }: Ca
           )
         )}
       </Card>
-
       {selectedCard && allPrintings && allPrintings.length > 1 && (
         <>
           <Button
@@ -89,7 +96,8 @@ export const CardDisplay = ({ selectedCard, allPrintings, onPrintingChange }: Ca
             <ChevronRight className="h-4 w-4" />
           </Button>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-background/80 px-2 py-1 rounded text-sm">
-            {allPrintings[currentIndex]?.setName} ({currentIndex + 1}/{allPrintings.length})
+            {allPrintings[currentIndex]?.setName} ({currentIndex + 1}/
+            {allPrintings.length})
           </div>
         </>
       )}

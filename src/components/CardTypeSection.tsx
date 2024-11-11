@@ -69,10 +69,10 @@ export const CardTypeSection = ({
       const aKey = a.includes("//") ? a.split("//")[0].trim() : a;
       const bKey = b.includes("//") ? b.split("//")[0].trim() : b;
       const aPrice = deckResult.bling[aKey]?.treatments.filter(
-        (t) => t.name === deckResult.bling[aKey]?.selectedTreatment
+        (t) => t.name === deckResult.bling[aKey]?.selectedTreatment,
       )[0]?.price;
       const bPrice = deckResult.bling[bKey]?.treatments.filter(
-        (t) => t.name === deckResult.bling[bKey]?.selectedTreatment
+        (t) => t.name === deckResult.bling[bKey]?.selectedTreatment,
       )[0]?.price;
       if (sortOrder === "asc") {
         return (aPrice ?? 0) - (bPrice ?? 0);
@@ -129,13 +129,13 @@ export const CardTypeSection = ({
             ? cardName.split("//")[0].trim()
             : cardName;
           const selectedPrinting = Object.entries(deckResult.bling).filter(
-            ([key]) => key.startsWith(cardNameKey)
+            ([key]) => key.startsWith(cardNameKey),
           )[0]?.[1];
           if (!selectedPrinting) {
             console.log(
               "No printings found for ",
               cardName,
-              "please open an issue."
+              "please open an issue.",
             );
             return null;
           }
@@ -180,7 +180,7 @@ const CardItem = ({
       "flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer text-sm",
       {
         "bg-gray-100 dark:bg-gray-800": cardName === lockedCard,
-      }
+      },
     )}
     onMouseEnter={() => {
       if (!isLocked) setSelectedCard(selectedPrinting, false);
