@@ -3,13 +3,7 @@ import { ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { CardOption, CardType, DeckPricingResult, Treatment } from "@/types";
-
-interface CardTypeSectionProps {
-  cardType: CardType;
-  cardNames: string[];
-  deckResult: DeckPricingResult;
-  setSelectedCard: (selectedPrinting: CardOption) => void;
-}
+import { cn } from "@/lib/utils";
 
 const cardTypes: Record<CardType, { label: string; emoji: string }> = {
   Battle: {
@@ -48,10 +42,21 @@ const cardTypes: Record<CardType, { label: string; emoji: string }> = {
 
 type SortOrder = "none" | "asc" | "desc";
 
+interface CardTypeSectionProps {
+  cardType: CardType;
+  cardNames: string[];
+  deckResult: DeckPricingResult;
+  isLocked: boolean;
+  lockedCard: string;
+  setSelectedCard: (selectedPrinting: CardOption, shouldLock: boolean) => void;
+}
+
 export const CardTypeSection = ({
   cardType,
   cardNames,
   deckResult,
+  isLocked,
+  lockedCard,
   setSelectedCard,
 }: CardTypeSectionProps) => {
   const [sortOrder, setSortOrder] = useState<SortOrder>("none");
@@ -64,10 +69,10 @@ export const CardTypeSection = ({
       const aKey = a.includes("//") ? a.split("//")[0].trim() : a;
       const bKey = b.includes("//") ? b.split("//")[0].trim() : b;
       const aPrice = deckResult.bling[aKey]?.treatments.filter(
-        (t) => t.name === deckResult.bling[aKey]?.selectedTreatment,
+        (t) => t.name === deckResult.bling[aKey]?.selectedTreatment
       )[0]?.price;
       const bPrice = deckResult.bling[bKey]?.treatments.filter(
-        (t) => t.name === deckResult.bling[bKey]?.selectedTreatment,
+        (t) => t.name === deckResult.bling[bKey]?.selectedTreatment
       )[0]?.price;
       if (sortOrder === "asc") {
         return (aPrice ?? 0) - (bPrice ?? 0);
@@ -124,13 +129,13 @@ export const CardTypeSection = ({
             ? cardName.split("//")[0].trim()
             : cardName;
           const selectedPrinting = Object.entries(deckResult.bling).filter(
-            ([key]) => key.startsWith(cardNameKey),
+            ([key]) => key.startsWith(cardNameKey)
           )[0]?.[1];
           if (!selectedPrinting) {
             console.log(
               "No printings found for ",
               cardName,
-              "please open an issue.",
+              "please open an issue."
             );
             return null;
           }
@@ -140,6 +145,8 @@ export const CardTypeSection = ({
               key={cardName}
               cardName={cardName}
               quantity={quantity}
+              isLocked={isLocked}
+              lockedCard={lockedCard}
               selectedPrinting={selectedPrinting}
               setSelectedCard={setSelectedCard}
             />
@@ -153,20 +160,32 @@ export const CardTypeSection = ({
 interface CardItemProps {
   cardName: string;
   quantity: number;
+  isLocked: boolean;
+  lockedCard: string;
   selectedPrinting: CardOption;
-  setSelectedCard: (selectedPrinting: CardOption) => void;
+  setSelectedCard: (selectedPrinting: CardOption, shouldLock: boolean) => void;
 }
 
 const CardItem = ({
   cardName,
   quantity,
+  isLocked,
+  lockedCard,
   selectedPrinting,
   setSelectedCard,
 }: CardItemProps) => (
   <div
     key={cardName}
-    className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer text-sm"
-    onMouseEnter={() => setSelectedCard(selectedPrinting)}
+    className={cn(
+      "flex items-center gap-2 px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer text-sm",
+      {
+        "bg-gray-100 dark:bg-gray-800": cardName === lockedCard,
+      }
+    )}
+    onMouseEnter={() => {
+      if (!isLocked) setSelectedCard(selectedPrinting, false);
+    }}
+    onClick={() => setSelectedCard(selectedPrinting, true)}
   >
     <span className="w-4 text-right text-gray-500 dark:text-gray-400">
       {quantity}

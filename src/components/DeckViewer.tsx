@@ -17,6 +17,8 @@ const DeckViewer = ({
 }) => {
   const [deck, setDeck] = useState<CardOption[]>([]);
   const [selectedCard, setSelectedCard] = useState<CardOption | null>(null);
+  const [lockedCard, setLockedCard] = useState<string>("");
+  const [isLocked, setIsLocked] = useState<boolean>(false);
   const { toast } = useToast();
 
   const CardTypeGroups: Record<CardType, string[]> = {
@@ -160,7 +162,7 @@ const DeckViewer = ({
     return card;
   };
 
-  const handleCardSelect = (card: CardOption | null) => {
+  const handleCardSelect = (card: CardOption | null, shouldLock: boolean) => {
     if (!card) {
       setSelectedCard(null);
       return;
@@ -168,9 +170,18 @@ const DeckViewer = ({
 
     const validatedCard = validateAndGetCard(card);
     setSelectedCard(validatedCard);
-
+    
     if (validatedCard.selectedTreatment !== card.selectedTreatment) {
       handleTreatmentChange(card.cardName, validatedCard.selectedTreatment!);
+    }
+
+    if (!shouldLock) return;
+    if (lockedCard === validatedCard.cardName) {
+      setIsLocked(false);
+      setLockedCard("");
+    } else {
+      setLockedCard(validatedCard.cardName);
+      setIsLocked(true);
     }
   };
 
@@ -263,6 +274,8 @@ const DeckViewer = ({
                   cardType={type as CardType}
                   cardNames={cardNames}
                   deckResult={deckResult}
+                  isLocked={isLocked}
+                  lockedCard={lockedCard}
                   setSelectedCard={handleCardSelect}
                 />
               )
