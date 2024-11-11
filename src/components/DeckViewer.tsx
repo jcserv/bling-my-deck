@@ -220,7 +220,7 @@ const DeckViewer = ({
                 </span>
               </div>
             </Card>
-            {selectedCard && (
+            {selectedCard && selectedCard.treatments.some((t) => t.price) && (
               <Card className="p-4">
                 <TreatmentSelect
                   card={selectedCard}
