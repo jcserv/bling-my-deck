@@ -104,3 +104,8 @@ export interface DeckPricingResult {
     numMissingCards: number;
   };
 }
+
+export enum Currency {
+  USD = "USD",
+  EUR = "EUR",
+}

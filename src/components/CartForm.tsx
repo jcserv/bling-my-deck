@@ -28,6 +28,7 @@ import {
   parseDeckList,
   Treatment,
   AllTreatments,
+  Currency,
 } from "@/types";
 
 import currency from "@/assets/currency.json";
@@ -67,13 +68,14 @@ export const CartForm: React.FC = () => {
     null,
     new Date(Date.now() + ONE_DAY_IN_MILLISECONDS),
   );
+  const [, setLocalCurrency] = useLocalStorage("localCurrency", Currency.USD, new Date(Date.now() + ONE_DAY_IN_MILLISECONDS));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       decklist: "",
       treatments: [],
-      localCurrency: "USD",
+      localCurrency: "",
     },
   });
 
@@ -87,6 +89,7 @@ export const CartForm: React.FC = () => {
       ...values,
       decklist: parseDeckList(values.decklist),
     });
+    setLocalCurrency(values.localCurrency);
     navigate({
       to: "/overview",
     });
@@ -150,7 +153,6 @@ export const CartForm: React.FC = () => {
                         <SelectItem
                           key={currency.value}
                           value={currency.value}
-                          disabled={currency.disabled}
                         >
                           {currency.emoji} {currency.label}
                         </SelectItem>
