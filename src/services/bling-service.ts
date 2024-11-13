@@ -5,11 +5,16 @@ import {
   CardOption,
   Card,
   Treatment,
+  Currency,
 } from "@/types";
 import { ScryfallCard } from "@/types/scryfall";
 
 export class BlingService {
-  constructor() {}
+  private localCurrency: Currency;
+
+  constructor(localCurrency: Currency) {
+    this.localCurrency = localCurrency;
+  }
 
   async processDecklist(submission: Submission): Promise<DeckPricingResult> {
     const cardMap: { [name: string]: CardOption[] } = {};
@@ -105,6 +110,17 @@ export class BlingService {
     card: ScryfallCard,
     treatment: Treatment,
   ): string | null {
+    if (this.localCurrency === Currency.EUR) {
+      switch (treatment) {
+        case Treatment.Normal:
+          return card.prices.eur;
+        case Treatment.Foil:
+          return card.prices.eur_foil;
+        default:
+          return card.prices.eur_etched;
+      }
+    }
+
     switch (treatment) {
       case Treatment.Normal:
         return card.prices.usd;

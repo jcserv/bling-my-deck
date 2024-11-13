@@ -7,8 +7,15 @@ import { CardDisplay } from "@/components/CardDisplay";
 import { CardTypeSection } from "@/components/CardTypeSection";
 import { useToast } from "@/hooks/use-toast";
 import { toMoxfield } from "@/lib/decklist";
-import { DeckPricingResult, CardOption, CardType, Treatment } from "@/types";
+import {
+  DeckPricingResult,
+  CardOption,
+  CardType,
+  Treatment,
+  Currency,
+} from "@/types";
 import TreatmentSelect from "./TreatmentSelect";
+import { useLocalStorage } from "@/hooks/localStorage";
 
 const DeckViewer = ({
   deckResult,
@@ -19,6 +26,7 @@ const DeckViewer = ({
   const [selectedCard, setSelectedCard] = useState<CardOption | null>(null);
   const [lockedCard, setLockedCard] = useState<string>("");
   const [isLocked, setIsLocked] = useState<boolean>(false);
+  const [localCurrency] = useLocalStorage("localCurrency", Currency.USD);
   const { toast } = useToast();
 
   const CardTypeGroups: Record<CardType, string[]> = {
@@ -66,7 +74,7 @@ const DeckViewer = ({
     const newPrintingWithTreatment = {
       ...newPrinting,
       selectedTreatment: (newPrinting.treatments.some(
-        (t) => t.name === selectedCard?.selectedTreatment,
+        (t) => t.name === selectedCard?.selectedTreatment
       )
         ? selectedCard?.selectedTreatment
         : newPrinting.treatments[0]?.name) as Treatment,
@@ -78,7 +86,7 @@ const DeckViewer = ({
           return newPrintingWithTreatment;
         }
         return card;
-      }),
+      })
     );
 
     if (selectedCard?.cardName === cardName) {
@@ -95,7 +103,7 @@ const DeckViewer = ({
               ?.price || 0;
           return total + selectedTreatmentPrice;
         },
-        0,
+        0
       );
 
       deckResult.totalPrice = newTotalPrice;
@@ -112,7 +120,7 @@ const DeckViewer = ({
           };
         }
         return card;
-      }),
+      })
     );
 
     if (selectedCard?.cardName === cardName) {
@@ -122,7 +130,7 @@ const DeckViewer = ({
               ...prev,
               selectedTreatment: treatment as Treatment,
             }
-          : null,
+          : null
       );
     }
 
@@ -140,7 +148,7 @@ const DeckViewer = ({
               ?.price || 0;
           return total + selectedTreatmentPrice;
         },
-        0,
+        0
       );
       deckResult.totalPrice = newTotalPrice;
     }
@@ -150,7 +158,7 @@ const DeckViewer = ({
     if (
       !card.selectedTreatment ||
       !card.treatments.find(
-        (t) => t.name === card.selectedTreatment && t.available,
+        (t) => t.name === card.selectedTreatment && t.available
       )
     ) {
       const firstAvailableTreatment = card.treatments.find((t) => t.available);
@@ -186,7 +194,6 @@ const DeckViewer = ({
   };
 
   if (!deckResult) return null;
-
   return (
     <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden">
       <div className="w-full md:w-[280px] p-4">
@@ -210,13 +217,12 @@ const DeckViewer = ({
                   Price:
                 </span>
                 <span className="font-semibold">
-                  $
+                  {localCurrency === Currency.USD ? "$" : "€"}
                   {(selectedCard &&
                     selectedCard.treatments
                       ?.find((t) => t.name === selectedCard.selectedTreatment)
                       ?.price?.toFixed(2)) ??
                     "0.00"}{" "}
-                  USD
                 </span>
               </div>
             </Card>
@@ -234,7 +240,8 @@ const DeckViewer = ({
                   Total Price:
                 </span>
                 <span className="font-semibold">
-                  ${deckResult.totalPrice.toFixed(2)} USD
+                  {localCurrency === Currency.USD ? "$" : "€"}
+                  {deckResult.totalPrice.toFixed(2)}
                 </span>
               </div>
               {deckResult.missingPrices && (
@@ -280,7 +287,7 @@ const DeckViewer = ({
                   lockedCard={lockedCard}
                   setSelectedCard={handleCardSelect}
                 />
-              ),
+              )
           )}
         </div>
       </div>
