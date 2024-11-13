@@ -22,11 +22,26 @@ function Index() {
       <div className="min-h-[80vh] w-full flex flex-col items-center">
         {!error ? (
           <InfoBanner>
-            <span>
-              Enter the cards you want to bling out, and we&apos;ll show you all
-              of the most expensive printings available for each card, as well
-              as the total cost.
-            </span>
+            <>
+              <span>
+                Enter the cards you want to bling out, and we&apos;ll show you
+                all of the most expensive printings available for each card, as
+                well as the total cost.
+              </span>
+              <br />
+              <span className="italic">
+                Note: Prices may not be up-to-date, please see{" "}
+                <a
+                  href="https://scryfall.com/docs/faqs/where-do-scryfall-prices-come-from-7"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline"
+                >
+                  here
+                </a>{" "}
+                for more information.
+              </span>
+            </>
           </InfoBanner>
         ) : (
           <ErrorBanner
