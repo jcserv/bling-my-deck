@@ -29,6 +29,8 @@ import {
   Treatment,
   AllTreatments,
   Currency,
+  Exclusion,
+  AllExclusions,
 } from "@/types";
 
 import currency from "@/assets/currency.json";
@@ -48,16 +50,17 @@ const formSchema = z.object({
       },
       {
         message: "Decklist cannot contain more than 100 cards",
-      },
+      }
     ),
   treatments: z
     .array(z.nativeEnum(Treatment))
     .min(1, "Please select one or more finishes"),
+  exclusions: z.array(z.nativeEnum(Exclusion)),
   localCurrency: z.enum(
     [currency[0].value, ...currency.map((currency) => currency.value)],
     {
       message: "Please select your local currency",
-    },
+    }
   ),
 });
 
@@ -66,9 +69,13 @@ export const CartForm: React.FC = () => {
   const [, setSubmission] = useLocalStorage(
     "submission",
     null,
-    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS),
+    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS)
   );
-  const [, setLocalCurrency] = useLocalStorage("localCurrency", Currency.USD, new Date(Date.now() + ONE_DAY_IN_MILLISECONDS));
+  const [, setLocalCurrency] = useLocalStorage(
+    "localCurrency",
+    Currency.USD,
+    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS)
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,6 +83,7 @@ export const CartForm: React.FC = () => {
       decklist: "",
       treatments: [],
       localCurrency: "",
+      exclusions: [],
     },
   });
 
@@ -132,7 +140,7 @@ export const CartForm: React.FC = () => {
               )}
             />
           </div>
-          <div className="w-full md:w-64 space-y-6">
+          <div className="w-full md:w-64 space-y-4">
             <FormField
               control={form.control}
               name="localCurrency"
@@ -150,10 +158,7 @@ export const CartForm: React.FC = () => {
                     </FormControl>
                     <SelectContent>
                       {currency.map((currency) => (
-                        <SelectItem
-                          key={currency.value}
-                          value={currency.value}
-                        >
+                        <SelectItem key={currency.value} value={currency.value}>
                           {currency.emoji} {currency.label}
                         </SelectItem>
                       ))}
@@ -163,57 +168,110 @@ export const CartForm: React.FC = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="treatments"
-              render={() => (
-                <FormItem>
-                  <div>
-                    <FormLabel className="text-base">Finishes</FormLabel>
-                  </div>
-                  {AllTreatments.map((treatment) => (
-                    <FormField
-                      key={treatment}
-                      control={form.control}
-                      name="treatments"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={treatment}
-                            className="flex flex-row items-start space-x-2"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(
-                                  treatment as Treatment,
-                                )}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([
-                                        ...field.value,
-                                        treatment,
-                                      ])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== treatment,
-                                        ),
-                                      );
-                                }}
-                                className="mt-2"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal leading-none">
-                              {treatment}
-                            </FormLabel>
-                          </FormItem>
-                        );
-                      }}
-                    />
-                  ))}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="treatments"
+                render={() => (
+                  <FormItem>
+                    <div>
+                      <FormLabel className="text-base">Finishes</FormLabel>
+                    </div>
+                    {AllTreatments.map((treatment) => (
+                      <FormField
+                        key={treatment}
+                        control={form.control}
+                        name="treatments"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={treatment}
+                              className="flex flex-row items-start space-x-2"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    treatment as Treatment
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field.value,
+                                          treatment,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== treatment
+                                          )
+                                        );
+                                  }}
+                                  className="mt-1"
+                                />
+                              </FormControl>
+                              <FormLabel className="text-sm font-normal leading-none">
+                                {treatment}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="exclusions"
+                render={() => (
+                  <FormItem>
+                    <div>
+                      <FormLabel className="text-base">Exclude</FormLabel>
+                    </div>
+                    {AllExclusions.map((exclusion) => (
+                      <FormField
+                        key={exclusion}
+                        control={form.control}
+                        name="exclusions"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={exclusion}
+                              className="flex flex-row items-start space-x-2"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    exclusion as Exclusion
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field.value,
+                                          exclusion,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== exclusion
+                                          )
+                                        );
+                                  }}
+                                  className="mt-1"
+                                />
+                              </FormControl>
+                              <FormLabel className="text-sm font-normal leading-none">
+                                {exclusion}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-4">

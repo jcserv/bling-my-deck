@@ -56,6 +56,13 @@ export function parseDeckList(input: string): Card[] {
   return Object.values(cardMap);
 }
 
+export enum Exclusion {
+  Serialized = "Serialized",
+  SecretLair = "Secret Lair",
+}
+
+export const AllExclusions: string[] = Object.values(Exclusion);
+
 export enum Treatment {
   Normal = "Normal",
   Foil = "Foil",
@@ -67,7 +74,8 @@ export const AllTreatments: string[] = Object.values(Treatment);
 export type Submission = {
   decklist: Card[];
   treatments: Treatment[];
-  localCurrency: string;
+  localCurrency: Currency;
+  exclusions: Exclusion[];
 };
 
 export interface CardOption {

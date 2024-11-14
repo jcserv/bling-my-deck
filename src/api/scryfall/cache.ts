@@ -1,16 +1,18 @@
 import { cardStore, cardActions } from "@/store";
 import { scryfallClient } from "@/routes/__root";
 import { ScryfallCard } from "@/types/scryfall";
+import { Exclusion } from "@/types";
 
 export const fetchCardPrintings = async (
   cardName: string,
+  exclusions: Exclusion[],
 ): Promise<ScryfallCard[]> => {
   const cached = cardStore.state.cards[cardName];
   if (cached) {
     return cached;
   }
 
-  const printings = await scryfallClient.getAllPrintings(cardName);
+  const printings = await scryfallClient.getAllPrintings(cardName, exclusions);
   cardActions.setCardPrintings(cardName, printings);
   return printings;
 };
