@@ -6,14 +6,17 @@ import {
   Card,
   Treatment,
   Currency,
+  Exclusion,
 } from "@/types";
 import { ScryfallCard } from "@/types/scryfall";
 
 export class BlingService {
   private localCurrency: Currency;
+  private exclusions: Exclusion[];
 
-  constructor(localCurrency: Currency) {
+  constructor(localCurrency: Currency, exclusions: Exclusion[]) {
     this.localCurrency = localCurrency;
+    this.exclusions = exclusions;
   }
 
   async processDecklist(submission: Submission): Promise<DeckPricingResult> {
@@ -22,7 +25,7 @@ export class BlingService {
 
     await Promise.all(
       submission.decklist.map(async (card) => {
-        const printings = await fetchCardPrintings(card.name);
+        const printings = await fetchCardPrintings(card.name, this.exclusions);
         const options = this.processCardPrintings(
           printings,
           card,

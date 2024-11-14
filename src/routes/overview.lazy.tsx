@@ -5,7 +5,7 @@ import DeckViewer from "@/components/DeckViewer";
 import { Loading } from "@/components/Loading";
 import { useLocalStorage } from "@/hooks/localStorage";
 import { BlingService } from "@/services/bling-service";
-import { Currency, DeckPricingResult, Submission } from "@/types";
+import { DeckPricingResult, Submission } from "@/types";
 
 const loadingMessages = [
   "Bolting the bird",
@@ -32,7 +32,7 @@ function Overview() {
     const fetchData = async () => {
       if (!submission) return;
       const sub = submission as Submission;
-      const blingService = new BlingService(sub.localCurrency as Currency);
+      const blingService = new BlingService(sub.localCurrency, sub.exclusions);
       const result = await blingService.processDecklist(sub);
       setDeckResult(result);
     };
