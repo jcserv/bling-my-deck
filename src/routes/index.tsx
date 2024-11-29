@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { CartForm } from "@/components/CartForm";
-import { ErrorBanner, InfoBanner } from "@/components/Banner";
+import { CartForm, ErrorBanner, InfoBanner } from "@/components";
 
 type Params = {
   error: string;

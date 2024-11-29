@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui";
-import { TypeaheadTextarea } from "@/components/TypeaheadTextarea";
+import { TypeaheadTextarea } from "@/components";
 import { Finish } from "@/__generated__/graphql";
 import { useLocalStorage } from "@/hooks/localStorage";
 import {

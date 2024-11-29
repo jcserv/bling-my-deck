@@ -189,9 +189,9 @@ export class BlingService {
         }
       });
 
-    const missingCards = submission.decklist.filter(
-      (card) => blingMap[card.name] === undefined
-    );
+    const missingCards = submission.decklist
+      .map((card) => card.name)
+      .filter((name) => blingMap[name] === undefined);
 
     return {
       bling: blingMap,

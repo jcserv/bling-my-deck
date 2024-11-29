@@ -6,9 +6,7 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 import { ManaqlClient } from "@/api/manaql/client";
 import { Toaster } from "@/components/ui";
-import { ErrorBanner } from "@/components/Banner";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
+import { ErrorBanner, Footer, Header } from "@/components";
 
 const apolloClient = new ApolloClient({
   uri: "https://api.manaql.com",

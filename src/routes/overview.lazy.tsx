@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 
-import DeckViewer from "@/components/DeckViewer";
-import { Loading } from "@/components/Loading";
+import { DeckViewer, Loading } from "@/components";
 import { useLocalStorage } from "@/hooks/localStorage";
 import { BlingService } from "@/services/bling";
 import { DeckPricingResult, Submission } from "@/types";

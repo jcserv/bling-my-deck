@@ -1,17 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, LucideHelpCircle } from "lucide-react";
 
-import { Card, Button, ScrollArea } from "@/components/ui";
-import { CardDisplay } from "@/components/CardDisplay";
-import { CardTypeSection } from "@/components/CardTypeSection";
+import {
+  Card,
+  Button,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui";
+import { CardDisplay, CardTypeSection, TreatmentSelect } from "@/components";
 import { useToast } from "@/hooks/use-toast";
 import { toMoxfield } from "@/lib/decklist";
 import { DeckPricingResult, CardOption, CardType, Currency } from "@/types";
-import TreatmentSelect from "@/components/TreatmentSelect";
 import { useLocalStorage } from "@/hooks/localStorage";
 import { Finish } from "@/__generated__/graphql";
 
-const DeckViewer = ({
+export const DeckViewer = ({
   deckResult,
 }: {
   deckResult: DeckPricingResult | null;
@@ -258,26 +263,23 @@ const DeckViewer = ({
                   <span className="text-sm text-gray-500 dark:text-gray-400">
                     Missing cards:
                   </span>
-                  <span className="font-semibold">
-                    {deckResult.stats.numMissingCards}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <ScrollArea className="h-72 w-48 rounded-md border">
-                    <div className="p-4">
-                      <h4 className="mb-4 text-sm font-medium leading-none">
-                        Tags
-                      </h4>
-                      {tags.map((tag) => (
-                        <>
-                          <div key={tag} className="text-sm">
-                            {tag}
-                          </div>
-                          <Separator className="my-2" />
-                        </>
-                      ))}
-                    </div>
-                  </ScrollArea>
+                  <div className="flex items-center gap-1">
+                    <span className="font-semibold">
+                      {deckResult.stats.numMissingCards}
+                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <LucideHelpCircle className="h-5 w-5 text-gray-500 dark:text-gray-400 cursor-pointer" />
+                        </TooltipTrigger>
+                        <TooltipContent className="text-center">
+                          {deckResult.stats.missingCards.map((name) => (
+                            <p key={name}>{name}</p>
+                          ))}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </div>
               </Card>
             )}
@@ -305,5 +307,3 @@ const DeckViewer = ({
     </div>
   );
 };
-
-export default DeckViewer;

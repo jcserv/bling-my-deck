@@ -8,7 +8,7 @@ import {
 } from "@/components/ui";
 import { CardOption } from "@/types";
 
-const TreatmentSelect = ({
+export const TreatmentSelect = ({
   card,
   onPrintingChange,
 }: {
@@ -103,5 +103,3 @@ const TreatmentSelect = ({
     </div>
   );
 };
-
-export default TreatmentSelect;
