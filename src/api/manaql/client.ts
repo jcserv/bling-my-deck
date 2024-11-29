@@ -12,9 +12,10 @@ import {
   CardsQuery,
   CardsQueryVariables,
   FilterOperator,
+  Finish,
 } from "@/__generated__/graphql";
 // import { Exclusion } from "@/types";
-import { AUTOCOMPLETE_QUERY, GET_CARDS_QUERY } from "./query";
+import { AUTOCOMPLETE_QUERY, GET_CARDS_QUERY, getPrintingFilters } from "./query";
 
 export class ManaqlClient {
   private apolloClient: ApolloClient<NormalizedCacheObject>;
@@ -23,7 +24,7 @@ export class ManaqlClient {
     this.apolloClient = apolloClient;
   }
 
-  async getAllPrintings(cardNames: string[]): Promise<Card[]> {
+  async getAllPrintings(cardNames: string[], treatments: Finish[]): Promise<Card[]> {
     try {
       const { data }: ApolloQueryResult<CardsQuery> =
         await this.apolloClient.query<CardsQuery, CardsQueryVariables>({
@@ -36,6 +37,7 @@ export class ManaqlClient {
               query: cardNames,
             },
             printingsFirst: 750,
+            printingFilters: getPrintingFilters(treatments),
           },
         });
 
