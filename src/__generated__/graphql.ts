@@ -63,9 +63,9 @@ export enum FilterOperator {
 
 /** The available finishes of a printing, can be either nonfoil, foil, or etched. */
 export enum Finish {
-  Etched = 'etched',
+  Nonfoil = 'nonfoil',
   Foil = 'foil',
-  Nonfoil = 'nonfoil'
+  Etched = 'etched',
 }
 
 export type Node = {
