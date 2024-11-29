@@ -4,6 +4,7 @@ import {
   PrintingField,
   PrintingFilter,
 } from "@/__generated__/graphql";
+import { Exclusion } from "@/types";
 import gql from "graphql-tag";
 
 export const GET_CARDS_QUERY = gql`
@@ -48,14 +49,26 @@ export const GET_CARDS_QUERY = gql`
   }
 `;
 
-export function getPrintingFilters(treatments: Finish[]): PrintingFilter[] {
-  return [
-    {
-      fields: [PrintingField.Finishes],
-      operator: FilterOperator.Co,
-      query: treatments,
-    },
-  ];
+export function getTreatmentFilter(treatments: Finish[]): PrintingFilter {
+  return {
+    fields: [PrintingField.Finishes],
+    operator: FilterOperator.Co,
+    query: treatments,
+  };
+}
+
+export function getExclusionFilters(exclusions: Exclusion[]): PrintingFilter[] {
+  const filters: PrintingFilter[] = [];
+  exclusions.forEach(exclusion => {
+    if (exclusion === Exclusion.SecretLair) {
+      filters.push({
+        fields: [PrintingField.Set],
+        operator: FilterOperator.Ne,
+        query: ["sld"],
+      });
+    }
+  });
+  return filters;
 }
 
 export const AUTOCOMPLETE_QUERY = gql`

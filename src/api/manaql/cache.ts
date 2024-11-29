@@ -1,12 +1,14 @@
 import { cardStore, cardActions } from "@/store";
 import { manaqlClient } from "@/routes/__root";
 import { Card, Finish } from "@/__generated__/graphql";
+import { Exclusion } from "@/types";
 
 const BATCH_SIZE = 100;
 
 export const fetchCardPrintings = async (
   cardNames: string[],
-  treatments: Finish[]
+  treatments: Finish[],
+  exclusions: Exclusion[]
 ): Promise<{ [name: string]: Card[] }> => {
   const uncachedCards = cardNames.filter(
     (name) => !cardStore.state.cards[name]
@@ -30,7 +32,7 @@ export const fetchCardPrintings = async (
   for (let i = 0; i < uncachedCards.length; i += BATCH_SIZE) {
     const batch = uncachedCards.slice(i, i + BATCH_SIZE);
     
-    const response = await manaqlClient.getAllPrintings(batch, treatments);
+    const response = await manaqlClient.getAllPrintings(batch, treatments, exclusions);
     if (Array.isArray(response)) {
       response.forEach(card => {
         if (card?.name) {

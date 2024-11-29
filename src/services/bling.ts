@@ -23,7 +23,7 @@ export class BlingService {
     const blingMap: { [name: string]: CardOption } = {};
 
     const cardNames = submission.decklist.map((card) => card.name);
-    const cardPrintings = await fetchCardPrintings(cardNames, submission.treatments); // this.exclusions
+    const cardPrintings = await fetchCardPrintings(cardNames, submission.treatments, this.exclusions); // this.exclusions
 
     cardNames.forEach((cardName) => {
       const cards = cardPrintings[cardName] || [];
