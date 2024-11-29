@@ -36,7 +36,16 @@ export const Footer: React.FC = () => {
         </span>
         <span>
           <p className="text-sm text-muted-foreground mb-4">
-            This website uses{" "}
+            This website uses the{" "}
+            <a
+              href="https://github.com/jcserv/manaql/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              ManaQL API
+            </a>
+            , which relies on{" "}
             <a
               href="https://scryfall.com/"
               target="_blank"
@@ -45,7 +54,9 @@ export const Footer: React.FC = () => {
             >
               Scryfall
             </a>{" "}
-            to provide card data & images. Scryfall is not produced by or
+            to provide card data & images.
+            <br />
+            Scryfall is not produced by or
             endorsed by Wizards of the Coast.
           </p>
         </span>
