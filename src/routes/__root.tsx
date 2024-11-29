@@ -1,28 +1,34 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 
-import { ScryfallClient } from "@/api/scryfall/client";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { Toaster } from "@/components/ui/toaster";
-import { ErrorBanner } from "@/components/Banner";
+import { ManaqlClient } from "@/api/manaql/client";
+import { Toaster } from "@/components/ui";
+import { ErrorBanner, Footer, Header } from "@/components";
 
+const apolloClient = new ApolloClient({
+  uri: "https://api.manaql.com",
+  cache: new InMemoryCache(),
+});
+
+export const manaqlClient = new ManaqlClient(apolloClient);
 export const queryClient = new QueryClient();
-export const scryfallClient = new ScryfallClient();
 
 export const Route = createRootRoute({
   component: () => (
-    <QueryClientProvider client={queryClient}>
-      <Header />
-      <hr />
-      <Outlet />
-      <Footer />
-      <Toaster />
-      <Analytics />
-      <SpeedInsights />
-    </QueryClientProvider>
+    <ApolloProvider client={apolloClient}>
+      <QueryClientProvider client={queryClient}>
+        <Header />
+        <hr />
+        <Outlet />
+        <Footer />
+        <Toaster />
+        <Analytics />
+        <SpeedInsights />
+      </QueryClientProvider>
+    </ApolloProvider>
   ),
   errorComponent: ({ error }) => (
     <>

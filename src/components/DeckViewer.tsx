@@ -1,23 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, LucideHelpCircle } from "lucide-react";
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { CardDisplay } from "@/components/CardDisplay";
-import { CardTypeSection } from "@/components/CardTypeSection";
+import {
+  Card,
+  Button,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui";
+import { CardDisplay, CardTypeSection, TreatmentSelect } from "@/components";
 import { useToast } from "@/hooks/use-toast";
 import { toMoxfield } from "@/lib/decklist";
-import {
-  DeckPricingResult,
-  CardOption,
-  CardType,
-  Treatment,
-  Currency,
-} from "@/types";
-import TreatmentSelect from "./TreatmentSelect";
+import { DeckPricingResult, CardOption, CardType, Currency } from "@/types";
 import { useLocalStorage } from "@/hooks/localStorage";
+import { Finish } from "@/__generated__/graphql";
 
-const DeckViewer = ({
+export const DeckViewer = ({
   deckResult,
 }: {
   deckResult: DeckPricingResult | null;
@@ -77,7 +76,7 @@ const DeckViewer = ({
         (t) => t.name === selectedCard?.selectedTreatment
       )
         ? selectedCard?.selectedTreatment
-        : newPrinting.treatments[0]?.name) as Treatment,
+        : newPrinting.treatments[0]?.name) as Finish,
     };
 
     setDeck((prev) =>
@@ -116,7 +115,7 @@ const DeckViewer = ({
         if (card.cardName === cardName) {
           return {
             ...card,
-            selectedTreatment: treatment as Treatment,
+            selectedTreatment: treatment as Finish,
           };
         }
         return card;
@@ -128,7 +127,7 @@ const DeckViewer = ({
         prev
           ? {
               ...prev,
-              selectedTreatment: treatment as Treatment,
+              selectedTreatment: treatment as Finish,
             }
           : null
       );
@@ -137,7 +136,7 @@ const DeckViewer = ({
     if (deckResult) {
       const updatedCard = {
         ...deckResult.bling[cardName],
-        selectedTreatment: treatment as Treatment,
+        selectedTreatment: treatment as Finish,
       };
 
       deckResult.bling[cardName] = updatedCard;
@@ -164,7 +163,7 @@ const DeckViewer = ({
       const firstAvailableTreatment = card.treatments.find((t) => t.available);
       return {
         ...card,
-        selectedTreatment: firstAvailableTreatment?.name as Treatment,
+        selectedTreatment: firstAvailableTreatment?.name as Finish,
       };
     }
     return card;
@@ -264,9 +263,23 @@ const DeckViewer = ({
                   <span className="text-sm text-gray-500 dark:text-gray-400">
                     Missing cards:
                   </span>
-                  <span className="font-semibold">
-                    {deckResult.stats.numMissingCards}
-                  </span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-semibold">
+                      {deckResult.stats.numMissingCards}
+                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <LucideHelpCircle className="h-5 w-5 text-gray-500 dark:text-gray-400 cursor-pointer" />
+                        </TooltipTrigger>
+                        <TooltipContent className="text-center">
+                          {deckResult.stats.missingCards.map((name) => (
+                            <p key={name}>{name}</p>
+                          ))}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                 </div>
               </Card>
             )}
@@ -294,5 +307,3 @@ const DeckViewer = ({
     </div>
   );
 };
-
-export default DeckViewer;

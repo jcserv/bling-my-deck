@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Loader2 } from "lucide-react";
 
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui";
 import { useAutocomplete } from "@/hooks/autocomplete";
 import { cn } from "@/lib/utils";
 

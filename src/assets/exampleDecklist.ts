@@ -2,7 +2,7 @@ export const exampleDecklist = `1 Animate Dead
 1 Arachnogenesis
 1 Assassin's Trophy
 1 Azusa, Lost but Seeking
-1 Bala Ged Recovery
+1 Bala Ged Recovery // Bala Ged Sanctuary
 1 Beast Within
 1 Bitter Triumph
 1 Blinkmoth Nexus
@@ -29,7 +29,7 @@ export const exampleDecklist = `1 Animate Dead
 1 Heroic Intervention
 1 Inkmoth Nexus
 1 Instill Energy
-1 Invasion of Ikoria
+1 Invasion of Ikoria // Zilortha, Apex of Ikoria
 1 Jolrael, Mwonvuli Recluse
 1 Kaya's Ghostform
 1 Khalni Garden
@@ -38,7 +38,7 @@ export const exampleDecklist = `1 Animate Dead
 1 Liquimetal Torque
 1 Living Death
 1 Lumra, Bellow of the Woods
-1 Malakir Rebirth
+1 Malakir Rebirth // Malakir Mire
 1 Marvin, Murderous Mimic
 1 Mazirek, Kraul Death Priest
 1 Meathook Massacre II
@@ -88,7 +88,7 @@ export const exampleDecklist = `1 Animate Dead
 1 Vampiric Tutor
 1 Vault of Whispers
 1 Verdant Catacombs
-1 Walk-In Closet/Forgotten Cellar
+1 Walk-In Closet // Forgotten Cellar
 1 Wild Growth
 1 Winter, Cynical Opportunist
 1 World Shaper

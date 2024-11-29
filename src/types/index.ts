@@ -1,6 +1,8 @@
+import { Finish } from "@/__generated__/graphql";
+
 export const ONE_DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
 
-export type Card = {
+export type SubCard = {
   name: string;
   quantity: number;
   set?: string | undefined;
@@ -31,9 +33,9 @@ export const CardTypeOrdering: Record<CardType, number> = {
 const cardlineRegex =
   /^(\d+)\s+(.+?)(?:\s+\(([A-Z0-9]+)\)\s+(\d+))?(?:\s+\[([A-Z0-9]+)\])?$/;
 
-export function parseDeckList(input: string): Card[] {
+export function parseDeckList(input: string): SubCard[] {
   const lines = input.split("\n");
-  const cardMap: { [name: string]: Card } = {};
+  const cardMap: { [name: string]: SubCard } = {};
 
   for (const line of lines) {
     const match = line.trim().match(cardlineRegex);
@@ -63,17 +65,17 @@ export enum Exclusion {
 
 export const AllExclusions: string[] = Object.values(Exclusion);
 
-export enum Treatment {
-  Normal = "Normal",
-  Foil = "Foil",
-  Etched = "Etched",
-}
+// export enum Treatment {
+//   Normal = "Normal",
+//   Foil = "Foil",
+//   Etched = "Etched",
+// }
 
-export const AllTreatments: string[] = Object.values(Treatment);
+export const AllFinishes: string[] = Object.values(Finish);
 
 export type Submission = {
-  decklist: Card[];
-  treatments: Treatment[];
+  decklist: SubCard[];
+  treatments: Finish[];
   localCurrency: Currency;
   exclusions: Exclusion[];
 };
@@ -87,13 +89,13 @@ export interface CardOption {
   collectorNumber: string;
   image?: string;
   treatments: Array<{
-    name: Treatment;
+    name: Finish;
     price: number | null;
     available: boolean;
   }>;
   quantity: number;
   selected: boolean;
-  selectedTreatment?: Treatment;
+  selectedTreatment?: Finish;
 }
 
 export interface DeckPricingResult {
@@ -109,6 +111,7 @@ export interface DeckPricingResult {
     totalCards: number;
     uniqueCards: number;
     selectedCards: number;
+    missingCards: string[];
     numMissingCards: number;
   };
 }

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { queryCardNames } from "@/api/scryfall/cache";
 import { cardKeys } from "@/store";
+import { queryCardNames } from "@/api/manaql/cache";
 
 export function useAutocomplete(query: string) {
   return useQuery({
