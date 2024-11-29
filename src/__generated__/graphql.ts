@@ -83,6 +83,7 @@ export type PageInfo = {
 /** The fields of Printing to apply the filter(s) on. */
 export enum PrintingField {
   Finishes = 'finishes',
+  IsSerialized = 'isSerialized',
   Set = 'set'
 }
 
@@ -91,7 +92,7 @@ export type PrintingFilter = {
   fields: Array<PrintingField>;
   /** The operator to apply to the filter. Supported operators are `eq`, `ne`, and `sw`. */
   operator: FilterOperator;
-  /** The query values to apply to the filter. */
+  /** The query values to apply to the filter. Use "true" or "false" for boolean fields. */
   query: Array<Scalars['String']['input']>;
 };
 

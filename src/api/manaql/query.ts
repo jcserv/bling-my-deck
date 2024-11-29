@@ -66,6 +66,12 @@ export function getExclusionFilters(exclusions: Exclusion[]): PrintingFilter[] {
         operator: FilterOperator.Ne,
         query: ["sld"],
       });
+    } else if (exclusion === Exclusion.Serialized) {
+      filters.push({
+        fields: [PrintingField.IsSerialized],
+        operator: FilterOperator.Eq,
+        query: ["false"],
+      });
     }
   });
   return filters;
