@@ -19,25 +19,36 @@ export class BlingService {
   }
 
   async processDecklist(submission: Submission): Promise<DeckPricingResult> {
-    const cardMap: { [name: string]: CardOption[] } = {};
-    const blingMap: { [name: string]: CardOption } = {};
-
     const cardNames = submission.decklist.map((card) => card.name);
     const cardPrintings = await fetchCardPrintings(cardNames, submission.treatments, this.exclusions); // this.exclusions
 
-    cardNames.forEach((cardName) => {
+    const processPromises = cardNames.map(async (cardName) => {
       const cards = cardPrintings[cardName] || [];
       const options = this.processCardPrintings(
         cards,
         submission,
         submission.treatments
       );
-      cardMap[cardName] = options;
 
       const mostExpensiveOption = this.findMostExpensiveOption(
         options,
         submission.treatments
       );
+
+      return {
+        cardName,
+        options,
+        mostExpensiveOption
+      };
+    });
+
+    const results = await Promise.all(processPromises);
+
+    const cardMap: { [name: string]: CardOption[] } = {};
+    const blingMap: { [name: string]: CardOption } = {};
+
+    results.forEach(({ cardName, options, mostExpensiveOption }) => {
+      cardMap[cardName] = options;
       if (mostExpensiveOption) {
         blingMap[cardName] = mostExpensiveOption;
       }

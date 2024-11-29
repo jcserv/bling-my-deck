@@ -32,7 +32,9 @@ function Overview() {
       if (!submission) return;
       const sub = submission as Submission;
       const blingService = new BlingService(sub.localCurrency, sub.exclusions);
+      const start = Date.now();
       const result = await blingService.processDecklist(sub);
+      console.log(`Bling Service took ${Date.now() - start}ms`);
       setDeckResult(result);
     };
 
