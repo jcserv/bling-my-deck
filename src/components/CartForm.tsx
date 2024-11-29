@@ -4,24 +4,23 @@ import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Button,
+  Checkbox,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui";
 import { TypeaheadTextarea } from "@/components/TypeaheadTextarea";
+import { Finish } from "@/__generated__/graphql";
 import { useLocalStorage } from "@/hooks/localStorage";
 import {
   ONE_DAY_IN_MILLISECONDS,
@@ -34,7 +33,7 @@ import {
 
 import currency from "@/assets/currency.json";
 import { exampleDecklist } from "@/assets/exampleDecklist";
-import { Finish } from "@/__generated__/graphql";
+
 
 const decklistRegex =
   /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
@@ -195,10 +194,7 @@ export const CartForm: React.FC = () => {
                                   )}
                                   onCheckedChange={(checked) => {
                                     return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          finish,
-                                        ])
+                                      ? field.onChange([...field.value, finish])
                                       : field.onChange(
                                           field.value?.filter(
                                             (value) => value !== finish

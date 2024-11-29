@@ -22,7 +22,7 @@ export class BlingService {
     const cardMap: { [name: string]: CardOption[] } = {};
     const blingMap: { [name: string]: CardOption } = {};
 
-    const cardNames = submission.decklist.map(card => card.name);
+    const cardNames = submission.decklist.map((card) => card.name);
     const cardPrintings = await fetchCardPrintings(cardNames); // this.exclusions
 
     cardNames.forEach((cardName) => {
@@ -30,13 +30,13 @@ export class BlingService {
       const options = this.processCardPrintings(
         cards,
         submission,
-        submission.treatments,
+        submission.treatments
       );
       cardMap[cardName] = options;
 
       const mostExpensiveOption = this.findMostExpensiveOption(
         options,
-        submission.treatments,
+        submission.treatments
       );
       if (mostExpensiveOption) {
         blingMap[cardName] = mostExpensiveOption;
@@ -49,26 +49,30 @@ export class BlingService {
   private processCardPrintings(
     cards: Card[],
     submission: Submission,
-    allowedTreatments: Finish[],
+    allowedTreatments: Finish[]
   ): CardOption[] {
-    return cards.flatMap(card => {
+    return cards.flatMap((card) => {
       // Find the matching submission card
-      const submissionCard = submission.decklist.find(dc => dc.name === card.name);
+      const submissionCard = submission.decklist.find(
+        (dc) => dc.name === card.name
+      );
       if (!submissionCard || !card.printings?.edges) return [];
-  
+
       return card.printings.edges
-        .map(edge => edge?.node)
+        .map((edge) => edge?.node)
         .filter((node): node is Printing => !!node)
-        .filter(printing =>
-          // Filter by set if specified
-          !submissionCard.set || printing.setName === submissionCard.set
+        .filter(
+          (printing) =>
+            // Filter by set if specified
+            !submissionCard.set || printing.setName === submissionCard.set
         )
-        .filter(printing =>
-          // Filter by collector number if specified
-          !submissionCard.collectorNumber ||
-          printing.collectorNumber === submissionCard.collectorNumber
+        .filter(
+          (printing) =>
+            // Filter by collector number if specified
+            !submissionCard.collectorNumber ||
+            printing.collectorNumber === submissionCard.collectorNumber
         )
-        .map(printing => ({
+        .map((printing) => ({
           id: printing.id,
           cardName: card.name || "",
           cardType: card.mainType || "",
@@ -80,7 +84,7 @@ export class BlingService {
           requestedSet: submissionCard.set,
           requestedCollectorNumber: submissionCard.collectorNumber,
           selected: false,
-          treatments: allowedTreatments.map(treatment => ({
+          treatments: allowedTreatments.map((treatment) => ({
             name: treatment,
             price: parsePrice(this.getPriceForTreatment(printing, treatment)),
             available: this.isTreatmentAvailable(printing, treatment),
@@ -91,7 +95,7 @@ export class BlingService {
 
   private getPriceForTreatment(
     printing: Printing,
-    treatment: Finish,
+    treatment: Finish
   ): number | null {
     if (this.localCurrency === Currency.EUR) {
       switch (treatment) {
@@ -114,12 +118,9 @@ export class BlingService {
     }
   }
 
-  private isTreatmentAvailable(
-    printing: Printing,
-    treatment: Finish,
-  ): boolean {
+  private isTreatmentAvailable(printing: Printing, treatment: Finish): boolean {
     if (!printing.finishes) return false;
-    
+
     switch (treatment) {
       case Finish.Nonfoil:
         return printing.finishes.includes(Finish.Nonfoil);
@@ -132,7 +133,7 @@ export class BlingService {
 
   private findMostExpensiveOption(
     options: CardOption[],
-    allowedTreatments: Finish[],
+    allowedTreatments: Finish[]
   ): CardOption | undefined {
     let maxPrice = -1;
     let expensiveOption: CardOption | undefined;
@@ -160,7 +161,7 @@ export class BlingService {
   private calculateDeckStats(
     submission: Submission,
     cardMap: { [name: string]: CardOption[] },
-    blingMap: { [name: string]: CardOption },
+    blingMap: { [name: string]: CardOption }
   ): DeckPricingResult {
     let totalPrice = 0;
     let missingPrices = false;
@@ -173,7 +174,7 @@ export class BlingService {
         if (!card.selected || !card.selectedTreatment) return;
 
         const treatment = card.treatments.find(
-          (t) => t.name === card.selectedTreatment,
+          (t) => t.name === card.selectedTreatment
         );
         if (treatment) {
           if (treatment.price === null) {
@@ -188,6 +189,10 @@ export class BlingService {
         }
       });
 
+    const missingCards = submission.decklist.filter(
+      (card) => blingMap[card.name] === undefined
+    );
+
     return {
       bling: blingMap,
       cards: cardMap,
@@ -197,8 +202,8 @@ export class BlingService {
         totalCards,
         uniqueCards: Object.keys(cardMap).length,
         selectedCards,
-        numMissingCards:
-          submission.decklist.length - Object.keys(blingMap).length,
+        missingCards: missingCards,
+        numMissingCards: missingCards.length,
       },
     };
   }
@@ -206,7 +211,7 @@ export class BlingService {
   getBlingPrice(result: DeckPricingResult): number {
     return Object.values(result.bling).reduce((total, card) => {
       const treatment = card.treatments.find(
-        (t) => t.name === card.selectedTreatment,
+        (t) => t.name === card.selectedTreatment
       );
       return total + (treatment?.price || 0) * card.quantity;
     }, 0);

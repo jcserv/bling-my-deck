@@ -3,9 +3,9 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@radix-ui/react-accordion";
+} from "@/components/ui";
 import { Info } from "lucide-react";
-import { Alert, AlertTitle, AlertDescription } from "./ui/alert";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 export const InfoBanner = ({ children }: { children: JSX.Element }) => (

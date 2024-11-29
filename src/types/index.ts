@@ -111,6 +111,7 @@ export interface DeckPricingResult {
     totalCards: number;
     uniqueCards: number;
     selectedCards: number;
+    missingCards: SubCard[];
     numMissingCards: number;
   };
 }

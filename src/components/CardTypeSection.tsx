@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui";
 import { CardOption, CardType, Currency, DeckPricingResult } from "@/types";
 import { cn, getFormattedPrice } from "@/lib/utils";
 import { useLocalStorage } from "@/hooks/localStorage";

@@ -1,9 +1,10 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { CardOption } from "@/types";
+
+import { Button, Card } from "@/components/ui";
 import { Finish } from "@/__generated__/graphql";
+import { CardOption } from "@/types";
+
 
 interface CardDisplayProps {
   selectedCard: CardOption | null;

@@ -1,19 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { CopyIcon } from "lucide-react";
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, Button, ScrollArea } from "@/components/ui";
 import { CardDisplay } from "@/components/CardDisplay";
 import { CardTypeSection } from "@/components/CardTypeSection";
 import { useToast } from "@/hooks/use-toast";
 import { toMoxfield } from "@/lib/decklist";
-import {
-  DeckPricingResult,
-  CardOption,
-  CardType,
-  Currency,
-} from "@/types";
-import TreatmentSelect from "./TreatmentSelect";
+import { DeckPricingResult, CardOption, CardType, Currency } from "@/types";
+import TreatmentSelect from "@/components/TreatmentSelect";
 import { useLocalStorage } from "@/hooks/localStorage";
 import { Finish } from "@/__generated__/graphql";
 
@@ -267,6 +261,23 @@ const DeckViewer = ({
                   <span className="font-semibold">
                     {deckResult.stats.numMissingCards}
                   </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <ScrollArea className="h-72 w-48 rounded-md border">
+                    <div className="p-4">
+                      <h4 className="mb-4 text-sm font-medium leading-none">
+                        Tags
+                      </h4>
+                      {tags.map((tag) => (
+                        <>
+                          <div key={tag} className="text-sm">
+                            {tag}
+                          </div>
+                          <Separator className="my-2" />
+                        </>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </div>
               </Card>
             )}
