@@ -2,7 +2,8 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CardOption, Treatment } from "@/types";
+import { CardOption } from "@/types";
+import { Finish } from "@/__generated__/graphql";
 
 interface CardDisplayProps {
   selectedCard: CardOption | null;
@@ -52,7 +53,7 @@ export const CardDisplay = ({
             Hover over a card to see its image
           </div>
         )}
-        {selectedCard?.selectedTreatment === Treatment.Foil ? (
+        {selectedCard?.selectedTreatment === Finish.Foil ? (
           <div className="card-container">
             <div className="card">
               <img

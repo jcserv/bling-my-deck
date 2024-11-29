@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { CardOption, CardType, Currency, DeckPricingResult, Treatment } from "@/types";
-import { cn } from "@/lib/utils";
+import { CardOption, CardType, Currency, DeckPricingResult } from "@/types";
+import { cn, getFormattedPrice } from "@/lib/utils";
 import { useLocalStorage } from "@/hooks/localStorage";
+import { Finish } from "@/__generated__/graphql";
 
 const cardTypes: Record<CardType, { label: string; emoji: string }> = {
   Battle: {
@@ -196,12 +197,10 @@ const CardItem = ({
       <span className="flex-1 truncate">{cardName}</span>
       <span className="text-xs text-gray-500 dark:text-gray-400">
         {localCurrency === Currency.USD ? "$" : "€"}
-        {selectedPrinting?.treatments
-          .filter((t) => t.name === selectedPrinting?.selectedTreatment)[0]
-          ?.price?.toFixed(2)}{" "}
+        {getFormattedPrice(selectedPrinting)}{" "}
       </span>
       {selectedPrinting.selectedTreatment &&
-        selectedPrinting.selectedTreatment !== Treatment.Normal && (
+        selectedPrinting.selectedTreatment !== Finish.Nonfoil && (
           <span className="text-xs text-gray-500 dark:text-gray-400">
             {selectedPrinting.selectedTreatment}
           </span>

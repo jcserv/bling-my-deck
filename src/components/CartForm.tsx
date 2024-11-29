@@ -26,8 +26,7 @@ import { useLocalStorage } from "@/hooks/localStorage";
 import {
   ONE_DAY_IN_MILLISECONDS,
   parseDeckList,
-  Treatment,
-  AllTreatments,
+  AllFinishes,
   Currency,
   Exclusion,
   AllExclusions,
@@ -35,6 +34,7 @@ import {
 
 import currency from "@/assets/currency.json";
 import { exampleDecklist } from "@/assets/exampleDecklist";
+import { Finish } from "@/__generated__/graphql";
 
 const decklistRegex =
   /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
@@ -53,7 +53,7 @@ const formSchema = z.object({
       }
     ),
   treatments: z
-    .array(z.nativeEnum(Treatment))
+    .array(z.nativeEnum(Finish))
     .min(1, "Please select one or more finishes"),
   exclusions: z.array(z.nativeEnum(Exclusion)),
   localCurrency: z.enum(
@@ -177,39 +177,39 @@ export const CartForm: React.FC = () => {
                     <div>
                       <FormLabel className="text-base">Finishes</FormLabel>
                     </div>
-                    {AllTreatments.map((treatment) => (
+                    {AllFinishes.map((finish) => (
                       <FormField
-                        key={treatment}
+                        key={finish}
                         control={form.control}
                         name="treatments"
                         render={({ field }) => {
                           return (
                             <FormItem
-                              key={treatment}
+                              key={finish}
                               className="flex flex-row items-start space-x-2"
                             >
                               <FormControl>
                                 <Checkbox
                                   checked={field.value?.includes(
-                                    treatment as Treatment
+                                    finish as Finish
                                   )}
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([
                                           ...field.value,
-                                          treatment,
+                                          finish,
                                         ])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== treatment
+                                            (value) => value !== finish
                                           )
                                         );
                                   }}
                                   className="mt-1"
                                 />
                               </FormControl>
-                              <FormLabel className="text-sm font-normal leading-none">
-                                {treatment}
+                              <FormLabel className="text-sm font-normal leading-none capitalize">
+                                {finish}
                               </FormLabel>
                             </FormItem>
                           );

@@ -4,7 +4,7 @@ import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import DeckViewer from "@/components/DeckViewer";
 import { Loading } from "@/components/Loading";
 import { useLocalStorage } from "@/hooks/localStorage";
-import { BlingService } from "@/services/bling-service";
+import { BlingService } from "@/services/bling";
 import { DeckPricingResult, Submission } from "@/types";
 
 const loadingMessages = [
@@ -34,6 +34,7 @@ function Overview() {
       const sub = submission as Submission;
       const blingService = new BlingService(sub.localCurrency, sub.exclusions);
       const result = await blingService.processDecklist(sub);
+      console.log(result);
       setDeckResult(result);
     };
 

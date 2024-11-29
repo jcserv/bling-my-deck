@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export const CardsQuery = gql`
+export const GET_CARDS_QUERY = gql`
 query Cards($first: Int, $filter: CardFilter, $printingsFirst: Int) {
   cards(first: $first, filter: $filter) {
     edges {
@@ -31,6 +31,19 @@ query Cards($first: Int, $filter: CardFilter, $printingsFirst: Int) {
             hasNextPage
           }
         }
+      }
+    }
+  }
+}
+`;
+
+export const AUTOCOMPLETE_QUERY = gql`
+query Autocomplete($filter: CardFilter!, $first: Int) {
+  cards(filter: $filter, first: $first) {
+    edges {
+      node {
+        cardId
+        name
       }
     }
   }

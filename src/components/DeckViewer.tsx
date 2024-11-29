@@ -11,11 +11,11 @@ import {
   DeckPricingResult,
   CardOption,
   CardType,
-  Treatment,
   Currency,
 } from "@/types";
 import TreatmentSelect from "./TreatmentSelect";
 import { useLocalStorage } from "@/hooks/localStorage";
+import { Finish } from "@/__generated__/graphql";
 
 const DeckViewer = ({
   deckResult,
@@ -77,7 +77,7 @@ const DeckViewer = ({
         (t) => t.name === selectedCard?.selectedTreatment
       )
         ? selectedCard?.selectedTreatment
-        : newPrinting.treatments[0]?.name) as Treatment,
+        : newPrinting.treatments[0]?.name) as Finish,
     };
 
     setDeck((prev) =>
@@ -116,7 +116,7 @@ const DeckViewer = ({
         if (card.cardName === cardName) {
           return {
             ...card,
-            selectedTreatment: treatment as Treatment,
+            selectedTreatment: treatment as Finish,
           };
         }
         return card;
@@ -128,7 +128,7 @@ const DeckViewer = ({
         prev
           ? {
               ...prev,
-              selectedTreatment: treatment as Treatment,
+              selectedTreatment: treatment as Finish,
             }
           : null
       );
@@ -137,7 +137,7 @@ const DeckViewer = ({
     if (deckResult) {
       const updatedCard = {
         ...deckResult.bling[cardName],
-        selectedTreatment: treatment as Treatment,
+        selectedTreatment: treatment as Finish,
       };
 
       deckResult.bling[cardName] = updatedCard;
@@ -164,7 +164,7 @@ const DeckViewer = ({
       const firstAvailableTreatment = card.treatments.find((t) => t.available);
       return {
         ...card,
-        selectedTreatment: firstAvailableTreatment?.name as Treatment,
+        selectedTreatment: firstAvailableTreatment?.name as Finish,
       };
     }
     return card;
