@@ -23,7 +23,11 @@ export class BlingService {
     const blingMap: { [name: string]: CardOption } = {};
 
     const cardNames = submission.decklist.map((card) => card.name);
-    const cardPrintings = await fetchCardPrintings(cardNames, submission.treatments, this.exclusions); // this.exclusions
+    const cardPrintings = await fetchCardPrintings(
+      cardNames,
+      submission.treatments,
+      this.exclusions
+    );
 
     cardNames.forEach((cardName) => {
       const cards = cardPrintings[cardName] || [];
@@ -60,18 +64,14 @@ export class BlingService {
 
       return card.printings.edges
         .map((edge) => edge?.node)
-        .filter((node): node is Printing => !!node)
-        .filter(
-          (printing) =>
-            // Filter by set if specified
-            !submissionCard.set || printing.setName === submissionCard.set
-        )
-        .filter(
-          (printing) =>
-            // Filter by collector number if specified
-            !submissionCard.collectorNumber ||
-            printing.collectorNumber === submissionCard.collectorNumber
-        )
+        .filter((printing): printing is Printing => {
+          return (
+            !!printing &&
+            (!submissionCard.set || printing.setName === submissionCard.set) &&
+            (!submissionCard.collectorNumber ||
+              printing.collectorNumber === submissionCard.collectorNumber)
+          );
+        })
         .map((printing) => ({
           id: printing.id,
           cardName: card.name || "",
