@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\nquery Cards($first: Int, $filter: CardFilter, $printingsFirst: Int) {\n  cards(first: $first, filter: $filter) {\n    edges {\n      node {\n        id\n        cardId\n        name\n        mainType\n        printings(first: $printingsFirst) {\n          edges {\n            node {\n              id\n              printingId\n              set\n              setName\n              finishes\n              imageUri\n              backImageUri\n              priceUsd\n              priceUsdFoil\n              priceUsdEtched\n              priceEur\n              priceEurFoil\n              priceEurEtched\n            }\n          }\n          pageInfo {\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n": types.CardsDocument,
+    "\nquery Autocomplete($filter: CardFilter!, $first: Int) {\n  cards(filter: $filter, first: $first) {\n    edges {\n      node {\n        cardId\n        name\n      }\n    }\n  }\n}\n": types.AutocompleteDocument,
 };
 
 /**
@@ -35,6 +36,10 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\nquery Cards($first: Int, $filter: CardFilter, $printingsFirst: Int) {\n  cards(first: $first, filter: $filter) {\n    edges {\n      node {\n        id\n        cardId\n        name\n        mainType\n        printings(first: $printingsFirst) {\n          edges {\n            node {\n              id\n              printingId\n              set\n              setName\n              finishes\n              imageUri\n              backImageUri\n              priceUsd\n              priceUsdFoil\n              priceUsdEtched\n              priceEur\n              priceEurFoil\n              priceEurEtched\n            }\n          }\n          pageInfo {\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"): (typeof documents)["\nquery Cards($first: Int, $filter: CardFilter, $printingsFirst: Int) {\n  cards(first: $first, filter: $filter) {\n    edges {\n      node {\n        id\n        cardId\n        name\n        mainType\n        printings(first: $printingsFirst) {\n          edges {\n            node {\n              id\n              printingId\n              set\n              setName\n              finishes\n              imageUri\n              backImageUri\n              priceUsd\n              priceUsdFoil\n              priceUsdEtched\n              priceEur\n              priceEurFoil\n              priceEurEtched\n            }\n          }\n          pageInfo {\n            hasNextPage\n          }\n        }\n      }\n    }\n  }\n}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\nquery Autocomplete($filter: CardFilter!, $first: Int) {\n  cards(filter: $filter, first: $first) {\n    edges {\n      node {\n        cardId\n        name\n      }\n    }\n  }\n}\n"): (typeof documents)["\nquery Autocomplete($filter: CardFilter!, $first: Int) {\n  cards(filter: $filter, first: $first) {\n    edges {\n      node {\n        cardId\n        name\n      }\n    }\n  }\n}\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

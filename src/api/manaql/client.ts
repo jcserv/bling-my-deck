@@ -5,6 +5,8 @@ import {
 } from "@apollo/client";
 
 import {
+  AutocompleteQuery,
+  AutocompleteQueryVariables,
   Card,
   CardField,
   CardsQuery,
@@ -49,11 +51,26 @@ export class ManaqlClient {
 
   async getCardNamesByAutocomplete(query: string): Promise<string[]> {
     try {
-      const { data } = await this.apolloClient.query({
-        query: AUTOCOMPLETE_QUERY,
-        variables: { query },
-      });
-      return data.cards.map((card: Card) => card.name);
+      const { data }: ApolloQueryResult<AutocompleteQuery> =
+        await this.apolloClient.query<
+          AutocompleteQuery,
+          AutocompleteQueryVariables
+        >({
+          query: AUTOCOMPLETE_QUERY,
+          variables: {
+            first: 10,
+            filter: {
+              fields: [CardField.Name],
+              operator: FilterOperator.Sw,
+              query: [query],
+            },
+          },
+        });
+      return (
+        data.cards?.edges
+          ?.filter((edge) => edge?.node?.name != null)
+          .map((edge) => edge?.node?.name as string) ?? []
+      );
     } catch (error) {
       console.error(error);
       return [];

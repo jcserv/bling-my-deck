@@ -60,3 +60,14 @@ export const fetchCardPrintings = async (
 
   return result;
 };
+
+export const queryCardNames = async (query: string): Promise<string[]> => {
+  const cached = cardStore.state.cardNameQueries[query];
+  if (cached) {
+    return cached;
+  }
+
+  const cards = await manaqlClient.getCardNamesByAutocomplete(query);
+  cardActions.setCardNameQuery(query, cards);
+  return cards;
+};
