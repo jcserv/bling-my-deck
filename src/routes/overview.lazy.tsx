@@ -37,7 +37,7 @@ function Overview() {
     };
 
     fetchData()
-      .then(() => setTimeout(() => setLoading(false), 2500))
+      .then(() => setTimeout(() => setLoading(false), 100))
       .catch((err: Error) => {
         navigate({
           to: "/",
