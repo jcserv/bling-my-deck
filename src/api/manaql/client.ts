@@ -39,7 +39,6 @@ export class ManaqlClient {
           },
         });
 
-      // Transform the edges/nodes structure into a flat array of cards
       return (data.cards?.edges?.flatMap((edge) =>
         edge?.node ? [edge.node] : []
       ) ?? []) as Card[];
