@@ -34,7 +34,6 @@ function Overview() {
       const sub = submission as Submission;
       const blingService = new BlingService(sub.localCurrency, sub.exclusions);
       const result = await blingService.processDecklist(sub);
-      console.log(result);
       setDeckResult(result);
     };
 
