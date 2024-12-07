@@ -282,10 +282,10 @@ export const CartForm: React.FC = () => {
           <Button
             variant="secondary"
             type="button"
-            className="w-full"
+            className="w-full min-w-0 px-2 sm:px-4"
             onClick={() => form.setValue("decklist", exampleDecklist)}
           >
-            Use sample deck
+            <span className="truncate">Use sample deck</span>
           </Button>
           <Button type="submit" className="w-full">
             Submit
