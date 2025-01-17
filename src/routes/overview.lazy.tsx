@@ -3,8 +3,8 @@ import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { DeckViewer, Loading } from "@/components";
 import { useLocalStorage } from "@/hooks/localStorage";
-import { BlingService } from "@/services/bling";
 import { DeckPricingResult, Submission } from "@/types";
+import { createPricingService } from "@/services/pricing/factory";
 
 const loadingMessages = [
   "Bolting the bird",
@@ -31,10 +31,10 @@ function Overview() {
     const fetchData = async () => {
       if (!submission) return;
       const sub = submission as Submission;
-      const blingService = new BlingService(sub.localCurrency, sub.exclusions);
+      const pricingService = createPricingService(sub.localCurrency, sub.exclusions);
       const start = Date.now();
-      const result = await blingService.processDecklist(sub);
-      console.log(`Bling Service took ${Date.now() - start}ms`);
+      const result = await pricingService.processDecklist(sub);
+      console.log(`Pricing Service took ${Date.now() - start}ms`);
       setDeckResult(result);
     };
 

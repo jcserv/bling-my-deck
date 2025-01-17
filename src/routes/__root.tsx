@@ -7,6 +7,7 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { ManaqlClient } from "@/api/manaql/client";
 import { Toaster } from "@/components/ui";
 import { ErrorBanner, Footer, Header } from "@/components";
+import { ScryfallClient } from "@/api/scryfall/client";
 
 const apolloClient = new ApolloClient({
   uri: "https://api.manaql.com",
@@ -14,6 +15,7 @@ const apolloClient = new ApolloClient({
 });
 
 export const manaqlClient = new ManaqlClient(apolloClient);
+export const scryfallClient = new ScryfallClient();
 export const queryClient = new QueryClient();
 
 export const Route = createRootRoute({

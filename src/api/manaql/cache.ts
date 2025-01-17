@@ -28,7 +28,6 @@ export const fetchCardPrintings = async (
 
   const cardsByName: { [name: string]: Card[] } = {};
   
-  // Fetch uncached cards in batches of BATCH_SIZE
   for (let i = 0; i < uncachedCards.length; i += BATCH_SIZE) {
     const batch = uncachedCards.slice(i, i + BATCH_SIZE);
     
@@ -36,7 +35,6 @@ export const fetchCardPrintings = async (
     if (Array.isArray(response)) {
       response.forEach(card => {
         if (card?.name) {
-          // Initialize array if it doesn't exist
           if (!cardsByName[card.name]) {
             cardsByName[card.name] = [];
           }
@@ -50,7 +48,6 @@ export const fetchCardPrintings = async (
     cardActions.setCardPrintings(name, cards);
   });
 
-  // Return all requested cards (both cached and newly fetched)
   const result = cardNames.reduce(
     (acc, name) => {
       if (name) {

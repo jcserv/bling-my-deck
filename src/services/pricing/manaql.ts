@@ -1,15 +1,16 @@
-import { Finish, Printing, Card } from "@/__generated__/graphql";
+import { Card, Finish, Printing } from "@/__generated__/graphql";
 import { fetchCardPrintings } from "@/api/manaql/cache";
 import { parsePrice } from "@/lib/utils";
+import { CardPricingService } from "./types";
 import {
-  Submission,
-  DeckPricingResult,
-  CardOption,
   Currency,
   Exclusion,
+  DeckPricingResult,
+  CardOption,
+  Submission,
 } from "@/types";
 
-export class BlingService {
+export class ManaqlPricingService implements CardPricingService {
   private localCurrency: Currency;
   private exclusions: Exclusion[];
 

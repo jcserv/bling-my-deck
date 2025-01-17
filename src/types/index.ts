@@ -65,12 +65,6 @@ export enum Exclusion {
 
 export const AllExclusions: string[] = Object.values(Exclusion);
 
-// export enum Treatment {
-//   Normal = "Normal",
-//   Foil = "Foil",
-//   Etched = "Etched",
-// }
-
 export const AllFinishes: string[] = Object.values(Finish);
 
 export type Submission = {
