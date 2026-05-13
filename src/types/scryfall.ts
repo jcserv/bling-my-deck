@@ -42,24 +42,26 @@ export function scryfallToCard(scryfallCard: ScryfallCard): Card {
     mainType: parseMainCardType(scryfallCard.type_line),
     printings: {
       __typename: "cardPrintingsConnection",
-      edges: [{
-        __typename: "cardPrintingsConnectionEdge",
-        cursor: "1",
-        node: scryfallToPrinting(scryfallCard)
-      }],
+      edges: [
+        {
+          __typename: "cardPrintingsConnectionEdge",
+          cursor: "1",
+          node: scryfallToPrinting(scryfallCard),
+        },
+      ],
       pageInfo: {
         __typename: "PageInfo",
         hasNextPage: false,
         hasPreviousPage: false,
         startCursor: null,
-        endCursor: null
-      }
-    }
+        endCursor: null,
+      },
+    },
   };
 }
 
 export function scryfallCardsToCards(scryfallCards: ScryfallCard[]): Card[] {
-  return scryfallCards.map((c) => scryfallToCard(c))
+  return scryfallCards.map((c) => scryfallToCard(c));
 }
 
 export function scryfallToPrinting(scryfallCard: ScryfallCard): Printing {
@@ -69,21 +71,33 @@ export function scryfallToPrinting(scryfallCard: ScryfallCard): Printing {
     printingId: scryfallCard.id,
     set: scryfallCard.set,
     setName: scryfallCard.set_name,
-    finishes: scryfallCard.finishes.map(finish => {
-      if (finish === 'nonfoil') return Finish.Nonfoil;
-      if (finish === 'foil') return Finish.Foil;
+    finishes: scryfallCard.finishes.map((finish) => {
+      if (finish === "nonfoil") return Finish.Nonfoil;
+      if (finish === "foil") return Finish.Foil;
       return Finish.Etched;
     }),
-    imageUri: scryfallCard.image_uris?.normal || scryfallCard.card_faces?.[0].image_uris?.normal,
+    imageUri:
+      scryfallCard.image_uris?.normal ||
+      scryfallCard.card_faces?.[0].image_uris?.normal,
     backImageUri: scryfallCard.card_faces?.[1]?.image_uris?.normal || null,
     // Convert prices
-    priceUsd: scryfallCard.prices.usd ? parseFloat(scryfallCard.prices.usd) : null,
-    priceUsdFoil: scryfallCard.prices.usd_foil ? parseFloat(scryfallCard.prices.usd_foil) : null,
-    priceUsdEtched: scryfallCard.prices.usd_etched ? parseFloat(scryfallCard.prices.usd_etched) : null,
-    priceEur: scryfallCard.prices.eur ? parseFloat(scryfallCard.prices.eur) : null,
-    priceEurFoil: scryfallCard.prices.eur_foil ? parseFloat(scryfallCard.prices.eur_foil) : null,
+    priceUsd: scryfallCard.prices.usd
+      ? parseFloat(scryfallCard.prices.usd)
+      : null,
+    priceUsdFoil: scryfallCard.prices.usd_foil
+      ? parseFloat(scryfallCard.prices.usd_foil)
+      : null,
+    priceUsdEtched: scryfallCard.prices.usd_etched
+      ? parseFloat(scryfallCard.prices.usd_etched)
+      : null,
+    priceEur: scryfallCard.prices.eur
+      ? parseFloat(scryfallCard.prices.eur)
+      : null,
+    priceEurFoil: scryfallCard.prices.eur_foil
+      ? parseFloat(scryfallCard.prices.eur_foil)
+      : null,
     priceEurEtched: null, // Scryfall doesn't provide EUR etched prices
-    collectorNumber: scryfallCard.collector_number
+    collectorNumber: scryfallCard.collector_number,
   };
 }
 
@@ -97,7 +111,7 @@ function parseMainCardType(type_line: string | undefined): CardType {
   if (type_line.includes("Enchantment")) return CardType.Enchantment;
   if (type_line.includes("Sorcery")) return CardType.Sorcery;
   if (type_line.includes("Instant")) return CardType.Instant;
-  
+
   return CardType.Unknown;
 }
 

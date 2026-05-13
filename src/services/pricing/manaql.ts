@@ -27,7 +27,7 @@ export class ManaqlPricingService implements CardPricingService {
     const cardPrintings = await fetchCardPrintings(
       cardNames,
       submission.treatments,
-      this.exclusions
+      this.exclusions,
     );
 
     cardNames.forEach((cardName) => {
@@ -35,13 +35,13 @@ export class ManaqlPricingService implements CardPricingService {
       const options = this.processCardPrintings(
         cards,
         submission,
-        submission.treatments
+        submission.treatments,
       );
       cardMap[cardName] = options;
 
       const mostExpensiveOption = this.findMostExpensiveOption(
         options,
-        submission.treatments
+        submission.treatments,
       );
       if (mostExpensiveOption) {
         blingMap[cardName] = mostExpensiveOption;
@@ -54,12 +54,12 @@ export class ManaqlPricingService implements CardPricingService {
   private processCardPrintings(
     cards: Card[],
     submission: Submission,
-    allowedTreatments: Finish[]
+    allowedTreatments: Finish[],
   ): CardOption[] {
     return cards.flatMap((card) => {
       // Find the matching submission card
       const submissionCard = submission.decklist.find(
-        (dc) => dc.name === card.name
+        (dc) => dc.name === card.name,
       );
       if (!submissionCard || !card.printings?.edges) return [];
 
@@ -96,7 +96,7 @@ export class ManaqlPricingService implements CardPricingService {
 
   private getPriceForTreatment(
     printing: Printing,
-    treatment: Finish
+    treatment: Finish,
   ): number | null {
     if (this.localCurrency === Currency.EUR) {
       switch (treatment) {
@@ -134,7 +134,7 @@ export class ManaqlPricingService implements CardPricingService {
 
   private findMostExpensiveOption(
     options: CardOption[],
-    allowedTreatments: Finish[]
+    allowedTreatments: Finish[],
   ): CardOption | undefined {
     let maxPrice = -1;
     let expensiveOption: CardOption | undefined;
@@ -162,7 +162,7 @@ export class ManaqlPricingService implements CardPricingService {
   private calculateDeckStats(
     submission: Submission,
     cardMap: { [name: string]: CardOption[] },
-    blingMap: { [name: string]: CardOption }
+    blingMap: { [name: string]: CardOption },
   ): DeckPricingResult {
     let totalPrice = 0;
     let missingPrices = false;
@@ -175,7 +175,7 @@ export class ManaqlPricingService implements CardPricingService {
         if (!card.selected || !card.selectedTreatment) return;
 
         const treatment = card.treatments.find(
-          (t) => t.name === card.selectedTreatment
+          (t) => t.name === card.selectedTreatment,
         );
         if (treatment) {
           if (treatment.price === null) {
@@ -212,7 +212,7 @@ export class ManaqlPricingService implements CardPricingService {
   getBlingPrice(result: DeckPricingResult): number {
     return Object.values(result.bling).reduce((total, card) => {
       const treatment = card.treatments.find(
-        (t) => t.name === card.selectedTreatment
+        (t) => t.name === card.selectedTreatment,
       );
       return total + (treatment?.price || 0) * card.quantity;
     }, 0);

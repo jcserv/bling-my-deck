@@ -68,8 +68,13 @@ export class ScryfallClient {
     throw new Error("Max retries exceeded");
   }
 
-  async getAllPrintings(cardName: string, exclusions: Exclusion[]): Promise<ScryfallCard[]> {
-    const query = encodeURIComponent(`!"${cardName}"${exclusions.includes(Exclusion.Serialized) ? " -is:serialized" : ""}${exclusions.includes(Exclusion.SecretLair) ? " -s:SLD" : ""}`);
+  async getAllPrintings(
+    cardName: string,
+    exclusions: Exclusion[],
+  ): Promise<ScryfallCard[]> {
+    const query = encodeURIComponent(
+      `!"${cardName}"${exclusions.includes(Exclusion.Serialized) ? " -is:serialized" : ""}${exclusions.includes(Exclusion.SecretLair) ? " -s:SLD" : ""}`,
+    );
     let url = `https://api.scryfall.com/cards/search?q=${query}&unique=prints&order=usd`;
 
     const allCards: ScryfallCard[] = [];

@@ -5,7 +5,6 @@ import { Button, Card } from "@/components/ui";
 import { Finish } from "@/__generated__/graphql";
 import { CardOption } from "@/types";
 
-
 interface CardDisplayProps {
   selectedCard: CardOption | null;
   allPrintings?: CardOption[];

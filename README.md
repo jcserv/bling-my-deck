@@ -3,6 +3,7 @@
 bling-my-deck is a site that allows Magic: The Gathering players to find the most expensive version of their pet decks ✨
 
 ## features
+
 - View all printings for a card, and see how that affects the price
 - Typeahead autocomplete when inputting decklist
 - Mobile support

@@ -31,7 +31,10 @@ function Overview() {
     const fetchData = async () => {
       if (!submission) return;
       const sub = submission as Submission;
-      const pricingService = createPricingService(sub.localCurrency, sub.exclusions);
+      const pricingService = createPricingService(
+        sub.localCurrency,
+        sub.exclusions,
+      );
       const start = Date.now();
       const result = await pricingService.processDecklist(sub);
       console.log(`Pricing Service took ${Date.now() - start}ms`);

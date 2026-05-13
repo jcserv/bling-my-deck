@@ -5,7 +5,7 @@ import { Currency, Exclusion } from "@/types";
 
 export function createPricingService(
   localCurrency: Currency,
-  exclusions: Exclusion[]
+  exclusions: Exclusion[],
 ): CardPricingService {
   const useScryfall = import.meta.env.VITE_USE_SCRYFALL === "true";
   return useScryfall

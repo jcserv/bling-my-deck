@@ -8,10 +8,10 @@ const BATCH_SIZE = 100;
 export const fetchCardPrintings = async (
   cardNames: string[],
   treatments: Finish[],
-  exclusions: Exclusion[]
+  exclusions: Exclusion[],
 ): Promise<{ [name: string]: Card[] }> => {
   const uncachedCards = cardNames.filter(
-    (name) => !cardStore.state.cards[name]
+    (name) => !cardStore.state.cards[name],
   );
   if (uncachedCards.length === 0) {
     const result = cardNames.reduce(
@@ -21,19 +21,23 @@ export const fetchCardPrintings = async (
         }
         return acc;
       },
-      {} as { [name: string]: Card[] }
+      {} as { [name: string]: Card[] },
     );
     return result;
   }
 
   const cardsByName: { [name: string]: Card[] } = {};
-  
+
   for (let i = 0; i < uncachedCards.length; i += BATCH_SIZE) {
     const batch = uncachedCards.slice(i, i + BATCH_SIZE);
-    
-    const response = await manaqlClient.getAllPrintings(batch, treatments, exclusions);
+
+    const response = await manaqlClient.getAllPrintings(
+      batch,
+      treatments,
+      exclusions,
+    );
     if (Array.isArray(response)) {
-      response.forEach(card => {
+      response.forEach((card) => {
         if (card?.name) {
           if (!cardsByName[card.name]) {
             cardsByName[card.name] = [];
@@ -55,7 +59,7 @@ export const fetchCardPrintings = async (
       }
       return acc;
     },
-    {} as { [name: string]: Card[] }
+    {} as { [name: string]: Card[] },
   );
 
   return result;
