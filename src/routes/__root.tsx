@@ -1,4 +1,5 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client/react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ import { ErrorBanner, Footer, Header } from "@/components";
 import { ScryfallClient } from "@/api/scryfall/client";
 
 const apolloClient = new ApolloClient({
-  uri: "https://api.manaql.com",
+  link: new HttpLink({ uri: "https://api.manaql.com" }),
   cache: new InMemoryCache(),
 });
 

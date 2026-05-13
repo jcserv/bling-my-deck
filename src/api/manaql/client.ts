@@ -1,8 +1,4 @@
-import {
-  ApolloClient,
-  ApolloQueryResult,
-  NormalizedCacheObject,
-} from "@apollo/client";
+import { ApolloClient } from "@apollo/client";
 
 import {
   AutocompleteQuery,
@@ -18,16 +14,18 @@ import { AUTOCOMPLETE_QUERY, GET_CARDS_QUERY, getExclusionFilters, getTreatmentF
 import { Exclusion } from "@/types";
 
 export class ManaqlClient {
-  private apolloClient: ApolloClient<NormalizedCacheObject>;
+  private apolloClient: ApolloClient;
 
-  constructor(apolloClient: ApolloClient<NormalizedCacheObject>) {
+  constructor(apolloClient: ApolloClient) {
     this.apolloClient = apolloClient;
   }
 
   async getAllPrintings(cardNames: string[], treatments: Finish[], exclusions: Exclusion[]): Promise<Card[]> {
     try {
-      const { data }: ApolloQueryResult<CardsQuery> =
-        await this.apolloClient.query<CardsQuery, CardsQueryVariables>({
+      const { data } = await this.apolloClient.query<
+        CardsQuery,
+        CardsQueryVariables
+      >({
           query: GET_CARDS_QUERY,
           variables: {
             first: 100,
@@ -44,7 +42,7 @@ export class ManaqlClient {
           },
         });
 
-      return (data.cards?.edges?.flatMap((edge) =>
+      return (data?.cards?.edges?.flatMap((edge) =>
         edge?.node ? [edge.node] : []
       ) ?? []) as Card[];
     } catch (error) {
@@ -55,11 +53,10 @@ export class ManaqlClient {
 
   async getCardNamesByAutocomplete(query: string): Promise<string[]> {
     try {
-      const { data }: ApolloQueryResult<AutocompleteQuery> =
-        await this.apolloClient.query<
-          AutocompleteQuery,
-          AutocompleteQueryVariables
-        >({
+      const { data } = await this.apolloClient.query<
+        AutocompleteQuery,
+        AutocompleteQueryVariables
+      >({
           query: AUTOCOMPLETE_QUERY,
           variables: {
             first: 10,
@@ -71,7 +68,7 @@ export class ManaqlClient {
           },
         });
       return (
-        data.cards?.edges
+        data?.cards?.edges
           ?.filter((edge) => edge?.node?.name != null)
           .map((edge) => edge?.node?.name as string) ?? []
       );
