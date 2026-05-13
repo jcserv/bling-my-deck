@@ -10,7 +10,12 @@ import {
   FilterOperator,
   Finish,
 } from "@/__generated__/graphql";
-import { AUTOCOMPLETE_QUERY, GET_CARDS_QUERY, getExclusionFilters, getTreatmentFilter } from "./query";
+import {
+  AUTOCOMPLETE_QUERY,
+  GET_CARDS_QUERY,
+  getExclusionFilters,
+  getTreatmentFilter,
+} from "./query";
 import { Exclusion } from "@/types";
 
 export class ManaqlClient {
@@ -20,30 +25,34 @@ export class ManaqlClient {
     this.apolloClient = apolloClient;
   }
 
-  async getAllPrintings(cardNames: string[], treatments: Finish[], exclusions: Exclusion[]): Promise<Card[]> {
+  async getAllPrintings(
+    cardNames: string[],
+    treatments: Finish[],
+    exclusions: Exclusion[],
+  ): Promise<Card[]> {
     try {
       const { data } = await this.apolloClient.query<
         CardsQuery,
         CardsQueryVariables
       >({
-          query: GET_CARDS_QUERY,
-          variables: {
-            first: 100,
-            filter: {
-              fields: [CardField.Name],
-              operator: FilterOperator.Eq,
-              query: cardNames,
-            },
-            printingsFirst: 750,
-            printingFilters: [
-              getTreatmentFilter(treatments),
-              ...getExclusionFilters(exclusions),
-            ],
+        query: GET_CARDS_QUERY,
+        variables: {
+          first: 100,
+          filter: {
+            fields: [CardField.Name],
+            operator: FilterOperator.Eq,
+            query: cardNames,
           },
-        });
+          printingsFirst: 750,
+          printingFilters: [
+            getTreatmentFilter(treatments),
+            ...getExclusionFilters(exclusions),
+          ],
+        },
+      });
 
       return (data?.cards?.edges?.flatMap((edge) =>
-        edge?.node ? [edge.node] : []
+        edge?.node ? [edge.node] : [],
       ) ?? []) as Card[];
     } catch (error) {
       console.error(error);
@@ -57,16 +66,16 @@ export class ManaqlClient {
         AutocompleteQuery,
         AutocompleteQueryVariables
       >({
-          query: AUTOCOMPLETE_QUERY,
-          variables: {
-            first: 10,
-            filter: {
-              fields: [CardField.Name],
-              operator: FilterOperator.Sw,
-              query: [query],
-            },
+        query: AUTOCOMPLETE_QUERY,
+        variables: {
+          first: 10,
+          filter: {
+            fields: [CardField.Name],
+            operator: FilterOperator.Sw,
+            query: [query],
           },
-        });
+        },
+      });
       return (
         data?.cards?.edges
           ?.filter((edge) => edge?.node?.name != null)

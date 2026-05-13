@@ -84,12 +84,19 @@ export const TreatmentSelect = ({
             value={treatments[currentIndex]?.name}
             onValueChange={handleSelectChange}
           >
-            <SelectTrigger className="w-[160px] capitalize" aria-label="Treatment select">
+            <SelectTrigger
+              className="w-[160px] capitalize"
+              aria-label="Treatment select"
+            >
               <SelectValue placeholder="Select finish" />
             </SelectTrigger>
             <SelectContent>
               {treatments.map((treatment) => (
-                <SelectItem key={treatment.name} value={treatment.name} className="capitalize">
+                <SelectItem
+                  key={treatment.name}
+                  value={treatment.name}
+                  className="capitalize"
+                >
                   {treatment.name}
                 </SelectItem>
               ))}

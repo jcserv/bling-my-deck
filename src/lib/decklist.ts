@@ -5,7 +5,7 @@ export function toMoxfield(deck: CardOption[]): string {
   const selectedCards = deck
     .map(
       (card) =>
-        `${card.quantity} ${card.cardName} (${card.setCode.toUpperCase()}) ${card.collectorNumber}${card.selectedTreatment === Finish.Foil ? " *f*" : ""}`
+        `${card.quantity} ${card.cardName} (${card.setCode.toUpperCase()}) ${card.collectorNumber}${card.selectedTreatment === Finish.Foil ? " *f*" : ""}`,
     )
     .join("\n");
 

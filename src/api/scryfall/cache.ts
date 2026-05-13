@@ -13,10 +13,13 @@ export const fetchCardPrintings = async (
     return cached;
   }
 
-  const scryfallCards = await scryfallClient.getAllPrintings(cardName, exclusions);
+  const scryfallCards = await scryfallClient.getAllPrintings(
+    cardName,
+    exclusions,
+  );
   const cards = scryfallCards.map(scryfallToCard);
-  
-  cardActions.setCardPrintings(cardName, cards);  
+
+  cardActions.setCardPrintings(cardName, cards);
   return cards;
 };
 

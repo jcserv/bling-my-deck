@@ -56,8 +56,7 @@ export const Footer: React.FC = () => {
             </a>{" "}
             to provide card data & images.
             <br />
-            Scryfall is not produced by or
-            endorsed by Wizards of the Coast.
+            Scryfall is not produced by or endorsed by Wizards of the Coast.
           </p>
         </span>
       </div>

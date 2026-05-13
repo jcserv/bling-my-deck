@@ -21,7 +21,7 @@ function formatPrice(price: number | null): string {
 // Use this method to safely get formatted price from a card option
 export function getFormattedPrice(cardOption: CardOption): string {
   const treatment = cardOption.treatments.find(
-    (t) => t.name === cardOption.selectedTreatment
+    (t) => t.name === cardOption.selectedTreatment,
   );
   return formatPrice(treatment?.price ?? null);
 }

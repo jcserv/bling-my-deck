@@ -59,7 +59,7 @@ export function getTreatmentFilter(treatments: Finish[]): PrintingFilter {
 
 export function getExclusionFilters(exclusions: Exclusion[]): PrintingFilter[] {
   const filters: PrintingFilter[] = [];
-  exclusions.forEach(exclusion => {
+  exclusions.forEach((exclusion) => {
     if (exclusion === Exclusion.SecretLair) {
       filters.push({
         fields: [PrintingField.Set],

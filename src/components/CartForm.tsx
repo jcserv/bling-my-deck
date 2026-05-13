@@ -34,7 +34,6 @@ import {
 import currency from "@/assets/currency.json";
 import { exampleDecklist } from "@/assets/exampleDecklist";
 
-
 const decklistRegex =
   /^(\d+\s+.+?(?:\s+\([A-Z0-9]+\)\s+\d+)?(?:\s+\[[A-Z0-9]+\])?\s*\n?)+$/;
 
@@ -49,7 +48,7 @@ const formSchema = z.object({
       },
       {
         message: "Decklist cannot contain more than 100 cards",
-      }
+      },
     ),
   treatments: z
     .array(z.nativeEnum(Finish))
@@ -59,7 +58,7 @@ const formSchema = z.object({
     [currency[0].value, ...currency.map((currency) => currency.value)],
     {
       message: "Please select your local currency",
-    }
+    },
   ),
 });
 
@@ -68,12 +67,12 @@ export const CartForm: React.FC = () => {
   const [, setSubmission] = useLocalStorage(
     "submission",
     null,
-    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS)
+    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS),
   );
   const [, setLocalCurrency] = useLocalStorage(
     "localCurrency",
     Currency.USD,
-    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS)
+    new Date(Date.now() + ONE_DAY_IN_MILLISECONDS),
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -190,15 +189,15 @@ export const CartForm: React.FC = () => {
                               <FormControl>
                                 <Checkbox
                                   checked={field.value?.includes(
-                                    finish as Finish
+                                    finish as Finish,
                                   )}
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([...field.value, finish])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== finish
-                                          )
+                                            (value) => value !== finish,
+                                          ),
                                         );
                                   }}
                                   className="mt-1"
@@ -238,7 +237,7 @@ export const CartForm: React.FC = () => {
                               <FormControl>
                                 <Checkbox
                                   checked={field.value?.includes(
-                                    exclusion as Exclusion
+                                    exclusion as Exclusion,
                                   )}
                                   onCheckedChange={(checked) => {
                                     return checked
@@ -248,8 +247,8 @@ export const CartForm: React.FC = () => {
                                         ])
                                       : field.onChange(
                                           field.value?.filter(
-                                            (value) => value !== exclusion
-                                          )
+                                            (value) => value !== exclusion,
+                                          ),
                                         );
                                   }}
                                   className="mt-1"

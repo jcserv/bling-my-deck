@@ -1,5 +1,11 @@
 import { CardPricingService } from "./types";
-import { Currency, Exclusion, DeckPricingResult, CardOption, Submission } from "@/types";
+import {
+  Currency,
+  Exclusion,
+  DeckPricingResult,
+  CardOption,
+  Submission,
+} from "@/types";
 import { fetchCardPrintings } from "@/api/scryfall/cache";
 import { Card, Finish, Printing } from "@/__generated__/graphql";
 
@@ -23,7 +29,7 @@ export class ScryfallPricingService implements CardPricingService {
         const options = this.processCardPrintings(
           printings,
           card,
-          submission.treatments
+          submission.treatments,
         );
         return { name: card.name, options };
       } catch (error) {
@@ -41,7 +47,7 @@ export class ScryfallPricingService implements CardPricingService {
 
         const mostExpensiveOption = this.findMostExpensiveOption(
           options,
-          submission.treatments
+          submission.treatments,
         );
         if (mostExpensiveOption) {
           blingMap[name] = mostExpensiveOption;
@@ -54,37 +60,52 @@ export class ScryfallPricingService implements CardPricingService {
 
   private processCardPrintings(
     cards: Card[],
-    submissionCard: { name: string; quantity: number; set?: string; collectorNumber?: string },
-    allowedTreatments: Finish[]
+    submissionCard: {
+      name: string;
+      quantity: number;
+      set?: string;
+      collectorNumber?: string;
+    },
+    allowedTreatments: Finish[],
   ): CardOption[] {
     return cards.flatMap((card) => {
-      const printings = card.printings?.edges?.map(edge => edge?.node).filter((p): p is Printing => !!p) || [];
-      
+      const printings =
+        card.printings?.edges
+          ?.map((edge) => edge?.node)
+          .filter((p): p is Printing => !!p) || [];
+
       return printings
-        .filter(printing => 
-          (!submissionCard.set || printing.setName === submissionCard.set) &&
-          (!submissionCard.collectorNumber || printing.collectorNumber === submissionCard.collectorNumber)
+        .filter(
+          (printing) =>
+            (!submissionCard.set || printing.setName === submissionCard.set) &&
+            (!submissionCard.collectorNumber ||
+              printing.collectorNumber === submissionCard.collectorNumber),
         )
-        .map((printing): CardOption => ({
-          id: printing.id,
-          cardName: card.name || "",
-          cardType: card.mainType || "",
-          setName: printing.setName || "",
-          setCode: printing.set || "",
-          collectorNumber: printing.collectorNumber || "",
-          image: printing.imageUri || "",
-          quantity: submissionCard.quantity,
-          selected: false,
-          treatments: allowedTreatments.map(treatment => ({
-            name: treatment,
-            price: this.getPriceForTreatment(printing, treatment),
-            available: this.isTreatmentAvailable(printing, treatment)
-          }))
-        }));
+        .map(
+          (printing): CardOption => ({
+            id: printing.id,
+            cardName: card.name || "",
+            cardType: card.mainType || "",
+            setName: printing.setName || "",
+            setCode: printing.set || "",
+            collectorNumber: printing.collectorNumber || "",
+            image: printing.imageUri || "",
+            quantity: submissionCard.quantity,
+            selected: false,
+            treatments: allowedTreatments.map((treatment) => ({
+              name: treatment,
+              price: this.getPriceForTreatment(printing, treatment),
+              available: this.isTreatmentAvailable(printing, treatment),
+            })),
+          }),
+        );
     });
   }
 
-  private getPriceForTreatment(printing: Printing, treatment: Finish): number | null {
+  private getPriceForTreatment(
+    printing: Printing,
+    treatment: Finish,
+  ): number | null {
     if (this.localCurrency === Currency.EUR) {
       switch (treatment) {
         case Finish.Nonfoil:
@@ -112,7 +133,7 @@ export class ScryfallPricingService implements CardPricingService {
 
   private findMostExpensiveOption(
     options: CardOption[],
-    allowedTreatments: Finish[]
+    allowedTreatments: Finish[],
   ): CardOption | undefined {
     let maxPrice = -1;
     let expensiveOption: CardOption | undefined;
@@ -140,7 +161,7 @@ export class ScryfallPricingService implements CardPricingService {
   private calculateDeckStats(
     submission: Submission,
     cardMap: { [name: string]: CardOption[] },
-    blingMap: { [name: string]: CardOption }
+    blingMap: { [name: string]: CardOption },
   ): DeckPricingResult {
     let totalPrice = 0;
     let missingPrices = false;
@@ -151,7 +172,7 @@ export class ScryfallPricingService implements CardPricingService {
       if (!card.selected || !card.selectedTreatment) return;
 
       const treatment = card.treatments.find(
-        (t) => t.name === card.selectedTreatment
+        (t) => t.name === card.selectedTreatment,
       );
       if (treatment) {
         if (treatment.price === null) {
