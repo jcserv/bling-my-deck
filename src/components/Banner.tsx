@@ -8,7 +8,7 @@ import { Info } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
-export const InfoBanner = ({ children }: { children: JSX.Element }) => (
+export const InfoBanner = ({ children }: { children: React.JSX.Element }) => (
   <Alert className="w-1/2 max-w-4xl bg-blue-400 dark:bg-blue-600 my-4 md:my-8">
     <Info className="h-4 w-4" />
     <AlertTitle>Info</AlertTitle>
